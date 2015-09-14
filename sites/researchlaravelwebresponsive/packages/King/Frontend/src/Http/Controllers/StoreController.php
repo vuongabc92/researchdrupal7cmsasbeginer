@@ -356,7 +356,7 @@ class StoreController extends FrontController
                 ],
                 'product' => [
                     'id'            => $product_id,
-                    'count_comment' => $product->total_comment,
+                    'count_comment' => $product->comments->count(),
                 ],
                 'is_owner' => ($comment->user_id === user()->id)
 
@@ -390,7 +390,13 @@ class StoreController extends FrontController
                 return pong(0, _t('opp'), 500);
             }
 
-            return pong(1, _t('saved_info'));
+            return pong(1, [
+                'data' => [
+                    'comments' => [
+                        'count' => $product->comments->count()
+                    ]
+                ]
+            ]);
         }
     }
 

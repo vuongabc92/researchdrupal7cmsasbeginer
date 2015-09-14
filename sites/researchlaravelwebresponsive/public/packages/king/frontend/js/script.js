@@ -1604,11 +1604,14 @@
             var current = this.element;
 
             current.on('click', '.close', function(){
-                var close     = $(this),
-                    ul        = close.parents('ul.product-comment-tree'),
-                    li        = close.parents('li'),
-                    commentId = li.data('comment-id'),
-                    deleteUrl = ul.data('delete-comment-url');
+                var close          = $(this),
+                    ul             = close.parents('ul.product-comment-tree'),
+                    li             = close.parents('li'),
+                    commentId      = li.data('comment-id'),
+                    deleteUrl      = ul.attr('data-delete-comment-url'),
+                    productId      = $('#quick-view-product-modal').data('product-id'),
+                    quickComment   = $('.quick-view-product-comments'),
+                    productComment = $('.product-' + productId).find('.product-comment').find('b');;
 
                 deleteUrl = deleteUrl.replace('__COMMENT_ID', commentId);
 
@@ -1617,7 +1620,11 @@
                     url: deleteUrl,
                     data:{_token: SETTING.CSRF_TOKEN},
                     success: function(response) {
+                        var data = response.data;
+
                         li.remove();
+                        quickComment.html(data.comments.count);
+                        productComment.html(data.comments.count);
                     }
                 });
             });
