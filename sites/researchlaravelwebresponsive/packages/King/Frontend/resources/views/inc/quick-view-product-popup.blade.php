@@ -27,17 +27,17 @@
                                 <b class="quick-view-product-comments">0</b>
                             </button>
                         </li>
-                        <button type="button" class="_fr close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                     </ul>
                 </div>
                 <div class="_fwfl _p20">
                     <button class="_fl btn _btn _btn-blue1 _btn-sm">Buy it</button>
                     <a href="#" class="_fr _fs13 _fwb _mt7 -qvp-details">Details...</a>
                 </div>
-                <span class="_fwfl">
+                <span class="_fwfl qvp-view-all-comment">
                     <button class="-qvp-view-more-comments">View more 217 comments</button>
                 </span>
-                <ul class="_fwfl _ls -qvp-comments-tree product-comment-tree"></ul>
+                <ul class="_fwfl _ls -qvp-comments-tree product-comment-tree" data-delete-comment-url="" data-delete-comment></ul>
                 <div class="_fwfl -qvp-comment-frm-container">
                     <form class="_fwfl -qvp-comment-form" id="qvp-comment-form" action="" method="POST" data-comments-product>
                         <img src="{{ asset('packages/king/frontend/images/loading-blue-white-16x16.gif') }}" class="-qvp-comment-loading" id="qvp-comment-loading"/>

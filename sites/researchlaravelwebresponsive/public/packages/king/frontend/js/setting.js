@@ -8,5 +8,6 @@ SETTING = {
     PIN_URI: $('body').find('#product-tree').data('pin-uri'),
     CAROUSEL_SLIDE: '<div class="item"><img class="lazyOwl" data-src="__SRC" /></div>',
     PRODUCT_CAROUSEL: null,
-    COMMENT_NODE: '<li><a class="comment-owner" href="__OWNER_HREF">__OWNER_NAME</a> <span>__CONTENT.</span></li>'
+    COMMENT_NODE: '<li data-comment-id="__COMMENT_ID"><a class="comment-owner" href="__OWNER_HREF">__OWNER_NAME</a> <span>__CONTENT.</span></li>',
+    COMMENT_NODE_OWNER: '<li data-comment-id="__COMMENT_ID"><button type="button" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></button><a class="comment-owner" href="__OWNER_HREF">__OWNER_NAME</a> <span>__CONTENT.</span></li>'
 }

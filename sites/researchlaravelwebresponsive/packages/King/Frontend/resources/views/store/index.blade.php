@@ -72,7 +72,7 @@
                                     <li>
                                         <button class="product-comment">
                                             <i class="fa fa-comments-o"></i>
-                                            <b>{{ $product->total_comment }}</b>
+                                            <b>{{ $product->comments->count() }}</b>
                                         </button>
                                     </li>
                                 </ul>
@@ -135,7 +135,7 @@
     $('.product-hide').tooltip();
     $('.product-remove').tooltip();
     $(document).ready(function() {
-        
+
     });
 
 </script>

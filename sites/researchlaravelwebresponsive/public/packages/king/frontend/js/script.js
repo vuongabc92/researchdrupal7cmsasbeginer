@@ -1134,13 +1134,13 @@
                     beforeSend: function(){},
                     error: function() {},
                     success: function(response) {
-                        var data         = response.data,
-                            carouselHtml = '';
+                        var data  = response.data;
 
                         that.isPinned(data.pin.viewer_has_pinned);
-                        carouselHtml = that.displayProductInfo(data);
-                        that.initCarousel(carouselHtml);
-                        that.showComments(response.data.comments.nodes);
+                        that.displayProductInfo(data);
+                        that.initCarousel(data.images);
+                        that.showComments(response.data.comments);
+                        that.modal.modal('show');
                     }
                 });
             });
@@ -1150,54 +1150,54 @@
             var nodes       = '',
                 listComment = $('.product-comment-tree');
 
-            $.each(comments, function(k, v){
-                var nodeStructure = SETTING.COMMENT_NODE;
+            $.each(comments.nodes, function(k, v){
+                var nodeStructure = (v.is_owner) ? SETTING.COMMENT_NODE_OWNER : SETTING.COMMENT_NODE;
 
-                nodeStructure = nodeStructure.replace('__OWNER_HREF', v.user.username).replace('__OWNER_NAME', v.user.username).replace('__CONTENT', v.text);
+                nodeStructure = nodeStructure.replace('__OWNER_HREF', v.user.username).replace('__OWNER_NAME', v.user.username).replace('__CONTENT', v.text).replace('__COMMENT_ID', v.id);
                 nodes += nodeStructure;
             });
 
             listComment.html(nodes);
+            listComment.attr('data-delete-comment-url', comments.delete_url);
         },
         displayProductInfo: function(info) {
             var modal        = this.modal,
-                fieldPrefix  = 'quick-view-product-',
-                fields       = ['name', 'price', 'old_price', 'description'],
-                slideHtml    = SETTING.CAROUSEL_SLIDE,
-                carouselHtml = '',
                 quickViewPin = modal.find('.quick-view-product-pin'),
                 quickComment = modal.find('.quick-view-product-comments');
 
             modal.attr('data-product-id', info.id);
-            modal.find('#qvp-comment-form').attr('action', info.comments.action)
+            modal.find('#qvp-comment-form').attr('action', info.comments.add_url)
             quickViewPin.html(info.pin.count);
             quickComment.html(info.comments.count);
 
-            $.each(fields, function(k, v) {
-                $('.' + fieldPrefix + v).html(info[v]);
-            });
+            if (info.comments.view_all) {
+                $('.qvp-view-all-comment button').show();
+                $('.product-comment-tree').css({height:'347px'});
+            } else {
+                $('.qvp-view-all-comment button').hide();
+                $('.product-comment-tree').css({height:'380px'});
+            }
 
-            $.each(info.images, function(k, v) {
-                if (v !== '') {
-                    carouselHtml += slideHtml.replace('__SRC', v);
-                }
-            });
-
-            return carouselHtml;
         },
-        initCarousel: function(html) {
-            var carousel = $('#product-carousel'),
+        initCarousel: function(images) {
+            var carousel        = $('#product-carousel'),
+                slideHtml       = SETTING.CAROUSEL_SLIDE,
+                carouselHtml    = '',
                 carouselSetting = {
                     singleItem: true,
                     lazyLoad: true,
                     pagination: false
                 };
 
-            carousel.html(html);
+            $.each(images, function(k, v) {
+                if (v !== '') {
+                    carouselHtml += slideHtml.replace('__SRC', v);
+                }
+            });
+
+            carousel.html(carouselHtml);
 
             SETTING.PRODUCT_CAROUSEL = carousel.owlCarousel(carouselSetting);
-
-            this.modal.modal('show');
         },
         isPinned: function(isPinned) {
 
@@ -1538,15 +1538,90 @@
         },
         showComment: function(data) {
             var listComment    = $('.product-comment-tree'),
-                nodeStructure  = SETTING.COMMENT_NODE,
+                nodeStructure  = (data.is_owner) ? SETTING.COMMENT_NODE_OWNER : SETTING.COMMENT_NODE,
                 quickComment   = $('.quick-view-product-comments'),
                 productComment = $('.product-' + data.product.id).find('.product-comment').find('b');
 
-            nodeStructure = nodeStructure.replace('__OWNER_HREF', data.user.username).replace('__OWNER_NAME', data.user.username).replace('__CONTENT', data.text);
+            nodeStructure = nodeStructure.replace('__OWNER_HREF', data.user.username).replace('__OWNER_NAME', data.user.username).replace('__CONTENT', data.text).replace('__COMMENT_ID', data.id);
 
             listComment.append(nodeStructure);
             quickComment.html(data.product.count_comment);
             productComment.html(data.product.count_comment);
+        },
+        destroy: function() {
+            $.removeData(this.element[0], pluginName);
+        }
+    };
+
+    $.fn[pluginName] = function(options, params) {
+        return this.each(function() {
+            var instance = $.data(this, pluginName);
+            if (!instance) {
+                $.data(this, pluginName, new Plugin(this, options));
+            } else if (instance[options]) {
+                instance[options](params);
+            } else {
+                window.console && console.log(options ? options + ' method is not exists in ' + pluginName : pluginName + ' plugin has been initialized');
+            }
+        });
+    };
+
+    $.fn[pluginName].defaults = {
+        option: 'value'
+    };
+
+    $(function() {
+        $('[data-' + pluginName + ']')[pluginName]();
+    });
+
+}(jQuery, window));
+
+/**
+ *  @name Delete Comment
+ *  @description Delete comment
+ *  @version 1.0
+ *  @options
+ *    option
+ *  @events
+ *    event
+ *  @methods
+ *    init
+ *    publicMethod
+ *    destroy
+ */
+;
+(function($, window, undefined) {
+    var pluginName = 'delete-comment';
+
+    function Plugin(element, options) {
+        this.element = $(element);
+        this.options = $.extend({}, $.fn[pluginName].defaults, options);
+        this.init();
+    }
+
+    Plugin.prototype = {
+        init: function() {
+            var current = this.element;
+
+            current.on('click', '.close', function(){
+                var close     = $(this),
+                    ul        = close.parents('ul.product-comment-tree'),
+                    li        = close.parents('li'),
+                    commentId = li.data('comment-id'),
+                    deleteUrl = ul.data('delete-comment-url');
+
+                deleteUrl = deleteUrl.replace('__COMMENT_ID', commentId);
+
+                $.ajax({
+                    type: 'DELETE',
+                    url: deleteUrl,
+                    data:{_token: SETTING.CSRF_TOKEN},
+                    success: function(response) {
+                        li.remove();
+                    }
+                });
+            });
+
         },
         destroy: function() {
             $.removeData(this.element[0], pluginName);

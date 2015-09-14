@@ -235,9 +235,10 @@ class StoreController extends FrontController
         // Only accept AJAX with HTTP GET request
         if ($request->ajax() && $request->isMethod('GET')) {
 
-            $id      = (int) $id;
-            $product = product($id);
-            $full    = ($full === 'fz') ? true : false;
+            $id         = (int) $id;
+            $product    = product($id);
+            $full       = ($full === 'fz') ? true : false;
+            $maxComment = config('front.max_product_comment');
 
             if ($product === null) {
                 return pong(0, _t('not_found'), 404);
@@ -264,9 +265,11 @@ class StoreController extends FrontController
                     'viewer_has_pinned' => $product->pin->isPinned()
                 ],
                 'comments' => [
-                    'action' => route('front_comments_add', $product->id),
-                    'count'  => (($c = $product->comments) !== null) ? $c->count() : 0,
-                    'nodes'  => (($c = $product->comments) !== null) ? $this->_rebuildComment($c->all()) : []
+                    'add_url'    => route('front_comments_add', $product->id),
+                    'delete_url' => route('front_comments_delete', [$product->id, '__COMMENT_ID']),
+                    'count'      => (($c = $product->comments) !== null) ? $c->count() : 0,
+                    'nodes'      => (($c = $product->comments) !== null) ? $this->_rebuildComment($c->take($maxComment)->all()) : [],
+                    'view_all'   => ($product->comments->count() > ($maxComment * -1))
                 ],
                 'last_modified' => $product->updated_at
             ];
@@ -334,12 +337,12 @@ class StoreController extends FrontController
                 $comment->user_id     = user()->id;
                 $comment->text        = $commentText;
                 $comment->create_time = time();
-                
+
                 if ($comment->save()) {
                     $product->total_comment = $product->total_comment + 1;
                     $product->save();
                 }
-                
+
             } catch (Exception $ex) {
                 return pong(0, _t('opp'), 500);
             }
@@ -354,9 +357,40 @@ class StoreController extends FrontController
                 'product' => [
                     'id'            => $product_id,
                     'count_comment' => $product->total_comment,
-                ]
-                
+                ],
+                'is_owner' => ($comment->user_id === user()->id)
+
             ]]);
+        }
+    }
+
+    public function ajaxDeleteComment(Request $request, $product_id, $comment_id) {
+        // Only accept ajax request with post method
+        if ($request->ajax() && $request->isMethod('DELETE')) {
+            $productId = (int) $product_id;
+            $commentId = (int) $comment_id;
+            $product   = product($productId);
+
+            if (is_null($product)) {
+                return pong(0, _t('not_found'), 404);
+            }
+
+            $comment = $product->comments->find($commentId);
+
+            if (is_null($comment)) {
+                return pong(0, _t('not_found'), 404);
+            }
+
+            try {
+                if ($comment->delete()){
+                    $product->total_comment = $product->total_comment - 1;
+                    $product->save();
+                }
+            } catch (Exception $ex) {
+                return pong(0, _t('opp'), 500);
+            }
+
+            return pong(1, _t('saved_info'));
         }
     }
 
@@ -370,7 +404,8 @@ class StoreController extends FrontController
                 'user' => [
                     'id'       => $comment->user->id,
                     'username' => $comment->user->user_name
-                ]
+                ],
+                'is_owner' => ($comment->user->id === user()->id)
             ];
         }
 

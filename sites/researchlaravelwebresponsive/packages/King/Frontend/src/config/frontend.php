@@ -13,5 +13,6 @@ return [
     'temp_path'           => 'uploads/temp/',
     'product_img_order'   => [1, 2, 3, 4],
     'product_img_size'    => ['big', 'medium', 'thumb'],
-    'max_product_img'     => 4
+    'max_product_img'     => 4,
+    'max_product_comment' => -20
 ];
