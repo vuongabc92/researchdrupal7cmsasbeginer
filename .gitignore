@@ -1,0 +1,11 @@
+/sites/researchlaravelwebresponsive/vendor
+/sites/researchlaravelwebresponsive/storage
+/sites/researchlaravelwebresponsive/node_modules
+/sites/researchlaravelwebresponsive/nbproject
+/sites/researchlaravelwebresponsive/tests
+/sites/researchlaravelwebresponsive/public/uploads/images/avatars
+/sites/researchlaravelwebresponsive/public/uploads/images/covers
+/sites/researchlaravelwebresponsive/public/uploads/images/products
+/sites/researchlaravelwebresponsive/public/uploads/temp
+/sites/researchlaravelwebresponsive/.env
+/sites/researchlaravelwebresponsive/composer.lock
