@@ -2,12 +2,35 @@
     <div class="modal-dialog modal-lg">
         <div class="_fwfl _bgw _r0 modal-content">
             <div class="-qvp-modal-left">
+                <div class="_fwfl -qvp-handle-container -qvp-handle-lg">
+                    <ul class="_fwfl product-handle -qvp-handle">
+                        <li>
+                            <button class="product-pin" data-pin-trigger>
+                                <i class="fa fa-thumb-tack"></i>
+                                <b class="quick-view-product-pin">0</b>
+                            </button>
+                        </li>
+                        <li>
+                            <button class="product-share">
+                                <i class="fa fa-share-alt"></i>
+                                <b class="quick-view-product-share">0</b>
+                            </button>
+                        </li>
+                        <li>
+                            <button class="product-comment">
+                                <i class="fa fa-comments-o"></i>
+                                <b class="quick-view-product-comments">0</b>
+                            </button>
+                        </li>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    </ul>
+                </div>
                 <div class="_fwfl product-carousel">
                     <div id="product-carousel" class="owl-carousel"></div>
                 </div>
             </div>
             <div class="-qvp-modal-right">
-                <div class="_fwfl -qvp-handle-container">
+                <div class="_fwfl -qvp-handle-container -qvp-handle-sm">
                     <ul class="_fwfl product-handle -qvp-handle">
                         <li>
                             <button class="product-pin" data-pin-trigger>
