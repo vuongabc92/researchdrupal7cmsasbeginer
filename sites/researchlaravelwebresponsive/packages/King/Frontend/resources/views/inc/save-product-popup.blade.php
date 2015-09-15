@@ -1,5 +1,5 @@
 <!-- Modal -->
-<div class="modal fade" id="add-product-modal" tabindex="-1" role="dialog" aria-labelledby="addProductModalLabel" aria-hidden="true">
+<div class="modal fade -ap-modal" id="add-product-modal" tabindex="-1" role="dialog" aria-labelledby="addProductModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="_fwfl _bgw _r3 modal-content">
             {!! Form::open(['route' => 'front_save_product', 'method' => 'POST', 'class' => '_fwfl', 'id' => 'save-product-form', 'data-save-product' => 'product_image_1|id|name|price|old_price|description']) !!}
