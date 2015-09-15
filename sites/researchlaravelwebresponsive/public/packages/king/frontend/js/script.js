@@ -1613,9 +1613,9 @@
                 var close          = $(this),
                     ul             = close.parents('ul.product-comment-tree'),
                     li             = close.parents('li'),
-                    commentId      = li.data('comment-id'),
+                    commentId      = li.attr('data-comment-id'),
                     deleteUrl      = ul.attr('data-delete-comment-url'),
-                    productId      = $('#quick-view-product-modal').data('product-id'),
+                    productId      = $('#quick-view-product-modal').attr('data-product-id'),
                     quickComment   = $('.quick-view-product-comments'),
                     productComment = $('.product-' + productId).find('.product-comment').find('b');;
 
@@ -1698,7 +1698,7 @@
 
                 $.ajax({
                     type: 'POST',
-                    url: current.data('url'),
+                    url: current.attr('data-url'),
                     data: {_token: SETTING.CSRF_TOKEN, current: currentNum, before: loadBefore},
                     success: function(response) {
                         var comments = response.data.comments;
