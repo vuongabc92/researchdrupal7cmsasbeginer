@@ -1147,8 +1147,10 @@
 
         },
         showComments: function(comments) {
-            var nodes       = '',
-                listComment = $('.product-comment-tree');
+            var nodes          = '',
+                listComment    = $('.product-comment-tree'),
+                loadComment    = $('#qvp-load-comments'),
+                LoadCommentTxt = loadComment.data('text');
 
             $.each(comments.nodes, function(k, v){
                 var nodeStructure = (v.is_owner) ? SETTING.COMMENT_NODE_OWNER : SETTING.COMMENT_NODE;
@@ -1159,6 +1161,9 @@
 
             listComment.html(nodes);
             listComment.attr('data-delete-comment-url', comments.delete_url);
+            loadComment.html(LoadCommentTxt.replace('__COUNT', comments.count));
+            loadComment.attr('data-url', comments.more_url);
+            loadComment.attr('data-current', 1);
         },
         displayProductInfo: function(info) {
             var modal        = this.modal,
@@ -1166,16 +1171,16 @@
                 quickComment = modal.find('.quick-view-product-comments');
 
             modal.attr('data-product-id', info.id);
-            modal.find('#qvp-comment-form').attr('action', info.comments.add_url)
+            modal.find('#qvp-comment-form').attr('action', info.comments.add_url);
             quickViewPin.html(info.pin.count);
             quickComment.html(info.comments.count);
 
             if (info.comments.view_all) {
                 $('.qvp-view-all-comment button').show();
-                $('.product-comment-tree').css({height:'347px'});
+                $('.product-comment-tree').css({height:'346px'});
             } else {
                 $('.qvp-view-all-comment button').hide();
-                $('.product-comment-tree').css({height:'380px'});
+                $('.product-comment-tree').css({height:'379px'});
             }
 
         },
@@ -1629,6 +1634,101 @@
                 });
             });
 
+        },
+        destroy: function() {
+            $.removeData(this.element[0], pluginName);
+        }
+    };
+
+    $.fn[pluginName] = function(options, params) {
+        return this.each(function() {
+            var instance = $.data(this, pluginName);
+            if (!instance) {
+                $.data(this, pluginName, new Plugin(this, options));
+            } else if (instance[options]) {
+                instance[options](params);
+            } else {
+                window.console && console.log(options ? options + ' method is not exists in ' + pluginName : pluginName + ' plugin has been initialized');
+            }
+        });
+    };
+
+    $.fn[pluginName].defaults = {
+        option: 'value'
+    };
+
+    $(function() {
+        $('[data-' + pluginName + ']')[pluginName]();
+    });
+
+}(jQuery, window));
+
+/**
+ *  @name Load More Comments
+ *  @description Load more product comments
+ *  @version 1.0
+ *  @options
+ *    option
+ *  @events
+ *    event
+ *  @methods
+ *    init
+ *    publicMethod
+ *    destroy
+ */
+;
+(function($, window, undefined) {
+    var pluginName = 'load-more-comments';
+
+    function Plugin(element, options) {
+        this.element = $(element);
+        this.options = $.extend({}, $.fn[pluginName].defaults, options);
+        this.init();
+    }
+
+    Plugin.prototype = {
+        init: function() {
+            var current = this.element,
+                that    = this
+
+            current.on('click', function(){
+                var currentNum = current.attr('data-current'),
+                    url        = current.data('url');
+
+                $.ajax({
+                    type: 'GET',
+                    url: url.replace('__CURRENT', currentNum),
+                    success: function(response) {
+                        var comments = response.data.comments;
+
+                       that.showComments(comments);
+                    }
+                });
+            });
+
+        },
+        showComments: function(comments) {
+            var nodes          = '',
+                listComment    = $('.product-comment-tree li:eq(0)'),
+                loadComment    = $('#qvp-load-comments'),
+                LoadCommentTxt = loadComment.data('text-2');
+
+            if (comments.nodes.length) {
+                $.each(comments.nodes, function(k, v){
+                    var nodeStructure = (v.is_owner) ? SETTING.COMMENT_NODE_OWNER : SETTING.COMMENT_NODE;
+
+                    nodeStructure = nodeStructure.replace('__OWNER_HREF', v.user.username).replace('__OWNER_NAME', v.user.username).replace('__CONTENT', v.text).replace('__COMMENT_ID', v.id);
+                    nodes += nodeStructure;
+                });
+
+                listComment.before(nodes);
+                loadComment.attr('data-current', comments.current);
+                loadComment.html(LoadCommentTxt);
+                if (comments.empty) {
+                    this.element.hide();
+                    $('.product-comment-tree').css({height:'379px'});
+                }
+            }
         },
         destroy: function() {
             $.removeData(this.element[0], pluginName);

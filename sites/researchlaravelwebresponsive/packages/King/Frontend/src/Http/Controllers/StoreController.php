@@ -238,7 +238,7 @@ class StoreController extends FrontController
             $id         = (int) $id;
             $product    = product($id);
             $full       = ($full === 'fz') ? true : false;
-            $maxComment = config('front.max_product_comment');
+            $maxComment = config('front.max_load_comments');
 
             if ($product === null) {
                 return pong(0, _t('not_found'), 404);
@@ -261,15 +261,16 @@ class StoreController extends FrontController
                     'image_4' => ($product->image_4 !== null) ? asset($productPath . (($full) ? $product->image_4->big : $product->image_4->thumb)) : '',
                 ],
                 'pin'         => [
-                    'count' => $product->total_pin,
+                    'count'             => $product->total_pin,
                     'viewer_has_pinned' => $product->pin->isPinned()
                 ],
                 'comments' => [
                     'add_url'    => route('front_comments_add', $product->id),
                     'delete_url' => route('front_comments_delete', [$product->id, '__COMMENT_ID']),
+                    'more_url'   => route('front_comments_more', [$product->id, '__CURRENT']),
                     'count'      => (($c = $product->comments) !== null) ? $c->count() : 0,
-                    'nodes'      => (($c = $product->comments) !== null) ? $this->_rebuildComment($c->take($maxComment)->all()) : [],
-                    'view_all'   => ($product->comments->count() > ($maxComment * -1))
+                    'nodes'      => (($c = $product->comments) !== null) ? $this->_rebuildComment($c->take(-$maxComment)->all()) : [],
+                    'view_all'   => ($product->comments->count() > ($maxComment))
                 ],
                 'last_modified' => $product->updated_at
             ];
@@ -288,8 +289,9 @@ class StoreController extends FrontController
     }
 
     /**
+     * Pin product
      *
-     * @param Request $request
+     * @param Illuminate\Http\Request $request
      *
      * @return type
      */
@@ -320,7 +322,15 @@ class StoreController extends FrontController
         }
     }
 
-    public function ajaxCommentProduct(Request $request, $product_id) {
+    /**
+     * Add product comment
+     *
+     * @param Illuminate\Http\Request $request
+     * @param int                     $product_id
+     *
+     * @return JSON
+     */
+    public function ajaxProductAddComment(Request $request, $product_id) {
 
         // Only accept ajax request with post method
         if ($request->ajax() && $request->isMethod('POST')) {
@@ -332,16 +342,12 @@ class StoreController extends FrontController
             }
 
             try {
-                $comment = new Comment();
+                $comment              = new Comment();
                 $comment->product_id  = $product_id;
                 $comment->user_id     = user()->id;
                 $comment->text        = $commentText;
                 $comment->create_time = time();
-
-                if ($comment->save()) {
-                    $product->total_comment = $product->total_comment + 1;
-                    $product->save();
-                }
+                $comment->save();
 
             } catch (Exception $ex) {
                 return pong(0, _t('opp'), 500);
@@ -364,7 +370,16 @@ class StoreController extends FrontController
         }
     }
 
-    public function ajaxDeleteComment(Request $request, $product_id, $comment_id) {
+    /**
+     * Delete product comment
+     *
+     * @param Illuminate\Http\Request $request
+     * @param int                     $product_id
+     * @param int                     $comment_id
+     *
+     * @return JSON
+     */
+    public function ajaxProductDeleteComment(Request $request, $product_id, $comment_id) {
         // Only accept ajax request with post method
         if ($request->ajax() && $request->isMethod('DELETE')) {
             $productId = (int) $product_id;
@@ -382,10 +397,7 @@ class StoreController extends FrontController
             }
 
             try {
-                if ($comment->delete()){
-                    $product->total_comment = $product->total_comment - 1;
-                    $product->save();
-                }
+                $comment->delete();
             } catch (Exception $ex) {
                 return pong(0, _t('opp'), 500);
             }
@@ -393,26 +405,66 @@ class StoreController extends FrontController
             return pong(1, [
                 'data' => [
                     'comments' => [
-                        'count' => $product->comments->count()
+                        'count' => Product::find($productId)->comments->count()
                     ]
                 ]
             ]);
         }
     }
 
+    public function ajaxLoadMoreComments(Request $request, $product_id, $current) {
+
+        // Only accept ajax request with post method
+        if ($request->ajax()) {
+            $product = product($product_id);
+            if (is_null($product)) {
+                return pong(0, _t('not_found'), 404);
+            }
+
+            $total    = $product->comments->count();// Total comments.
+            $max      = config('front.max_load_comments'); // Max number of comment to load.
+            $next     = ($current + 1) * $max; // Last comments include the next comments will be loaded.
+            $skip     = ($total > $next) ? $total - $next : 0; // Node of comment stop to take.
+            $take     = ($s = $total - $next) > 0 ? $max : $max + $s; //Number of comment will be taked.
+            $nextTake = ($s = $total - (($current + 2) * $max)) > 0 ? $max : $max + $s;//Seem with take but for the next
+            if ($take > 0) {
+                $comments = Comment::where('product_id', $product_id)->skip($skip)->take($take)->get();
+            } else {
+                $comments = [];
+            }
+
+            return pong(1, ['data' => [
+                'comments' => [
+                    'nodes'   => $this->_rebuildComment($comments),
+                    'current' => ($nextTake > 0) ? $current + 1 : $current,
+                    'empty'   => $nextTake <= 0
+                ]
+            ]]);
+        }
+    }
+
+    /**
+     * Rebuild comment with new data
+     *
+     * @param \Illuminate\Support\Collection $comments
+     *
+     * @return array
+     */
     protected function _rebuildComment($comments) {
 
         $final = [];
-        foreach ($comments as $comment) {
-            $final[] = [
-                'id' => $comment->id,
-                'text' => $comment->text,
-                'user' => [
-                    'id'       => $comment->user->id,
-                    'username' => $comment->user->user_name
-                ],
-                'is_owner' => ($comment->user->id === user()->id)
-            ];
+        if (count($comments)) {
+            foreach ($comments as $comment) {
+                $final[] = [
+                    'id' => $comment->id,
+                    'text' => $comment->text,
+                    'user' => [
+                        'id'       => $comment->user->id,
+                        'username' => $comment->user->user_name
+                    ],
+                    'is_owner' => ($comment->user->id === user()->id)
+                ];
+            }
         }
 
         return $final;
