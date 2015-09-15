@@ -428,14 +428,14 @@ class StoreController extends FrontController
             $max      = config('front.max_load_comments'); // Max number of comment to load.
             $next     = ($current + 1) * $max; // Last comments include the next comments will be loaded.
             $skip     = ($total > $next) ? $total - $next : 0; // Node of comment stop to take.
-            $take     = ($s = $total - $next) > 0 ? $max : $max + $s; //Number of comment will be taked.
-            $nextTake = ($s = $total - (($current + 2) * $max)) > 0 ? $max : $max + $s;//Seem with take but for the next
+            $take     = $this->getTake($total, $max, $current + 1); //Number of comment will be taked.
+            $nextTake = $total - (($current + 2) * $max);//Seem with take but for the next
             if ($take > 0) {
                 $comments = Comment::where('product_id', $product_id)->where('id', '<', $before)->skip($skip)->take($take)->get();
             } else {
                 $comments = [];
             }
-
+            //var_dump($next);die;
             return pong(1, ['data' => [
                 'comments' => [
                     'nodes'   => $this->_rebuildComment($comments),
@@ -446,6 +446,20 @@ class StoreController extends FrontController
         }
     }
 
+    function getTake($total, $max, $current) {
+        
+        if (($total - ($current*$max)) >= 0) {
+            return $max; 
+        } else {
+            $next = ($current - 1)*$max;
+            while($total - $next < 0) {
+                $this->getTake($total, $max, $current - 1);
+            }
+            
+            return $total - $next;
+        }
+    }
+    
     /**
      * Rebuild comment with new data
      *
