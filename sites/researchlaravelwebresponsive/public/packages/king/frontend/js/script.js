@@ -1164,6 +1164,7 @@
             loadComment.html(LoadCommentTxt.replace('__COUNT', comments.count));
             loadComment.attr('data-url', comments.more_url);
             loadComment.attr('data-current', 1);
+            loadComment.attr('data-load-before', comments.load_more_before);
         },
         displayProductInfo: function(info) {
             var modal        = this.modal,
@@ -1693,11 +1694,12 @@
 
             current.on('click', function(){
                 var currentNum = current.attr('data-current'),
-                    url        = current.data('url');
+                    loadBefore = current.attr('data-load-before');
 
                 $.ajax({
-                    type: 'GET',
-                    url: url.replace('__CURRENT', currentNum),
+                    type: 'POST',
+                    url: current.data('url'),
+                    data: {_token: SETTING.CSRF_TOKEN, current: currentNum, before: loadBefore},
                     success: function(response) {
                         var comments = response.data.comments;
 

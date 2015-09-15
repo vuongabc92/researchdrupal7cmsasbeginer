@@ -265,12 +265,13 @@ class StoreController extends FrontController
                     'viewer_has_pinned' => $product->pin->isPinned()
                 ],
                 'comments' => [
-                    'add_url'    => route('front_comments_add', $product->id),
-                    'delete_url' => route('front_comments_delete', [$product->id, '__COMMENT_ID']),
-                    'more_url'   => route('front_comments_more', [$product->id, '__CURRENT']),
-                    'count'      => (($c = $product->comments) !== null) ? $c->count() : 0,
-                    'nodes'      => (($c = $product->comments) !== null) ? $this->_rebuildComment($c->take(-$maxComment)->all()) : [],
-                    'view_all'   => ($product->comments->count() > ($maxComment))
+                    'add_url'          => route('front_comments_add', $product->id),
+                    'delete_url'       => route('front_comments_delete', [$product->id, '__COMMENT_ID']),
+                    'more_url'         => route('front_comments_more', $product->id),
+                    'count'            => (($c = $product->comments) !== null) ? $c->count() : 0,
+                    'nodes'            => (($c = $product->comments) !== null) ? $this->_rebuildComment($c->take(-$maxComment)->all()) : [],
+                    'view_all'         => ($product->comments->count() > ($maxComment)),
+                    'load_more_before' => $product->comments->take(-$maxComment)->last()->id
                 ],
                 'last_modified' => $product->updated_at
             ];
@@ -412,23 +413,25 @@ class StoreController extends FrontController
         }
     }
 
-    public function ajaxLoadMoreComments(Request $request, $product_id, $current) {
+    public function ajaxLoadMoreComments(Request $request, $product_id) {
 
         // Only accept ajax request with post method
-        if ($request->ajax()) {
+        if ($request->ajax() && $request->isMethod('POST')) {
             $product = product($product_id);
             if (is_null($product)) {
                 return pong(0, _t('not_found'), 404);
             }
 
-            $total    = $product->comments->count();// Total comments.
+            $current  = (int) $request->get('current');
+            $before   = (int) $request->get('before');
+            $total    = Comment::where('product_id', $product_id)->where('id', '<=', $before)->count();// Total comments.
             $max      = config('front.max_load_comments'); // Max number of comment to load.
             $next     = ($current + 1) * $max; // Last comments include the next comments will be loaded.
             $skip     = ($total > $next) ? $total - $next : 0; // Node of comment stop to take.
             $take     = ($s = $total - $next) > 0 ? $max : $max + $s; //Number of comment will be taked.
             $nextTake = ($s = $total - (($current + 2) * $max)) > 0 ? $max : $max + $s;//Seem with take but for the next
             if ($take > 0) {
-                $comments = Comment::where('product_id', $product_id)->skip($skip)->take($take)->get();
+                $comments = Comment::where('product_id', $product_id)->where('id', '<', $before)->skip($skip)->take($take)->get();
             } else {
                 $comments = [];
             }
