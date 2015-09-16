@@ -1163,7 +1163,7 @@
             listComment.attr('data-delete-comment-url', comments.delete_url);
             loadComment.html(LoadCommentTxt.replace('__COUNT', comments.count));
             loadComment.attr('data-url', comments.more_url);
-            loadComment.attr('data-current', 1);
+            loadComment.attr('data-next', 2);
             loadComment.attr('data-load-before', comments.load_more_before);
         },
         displayProductInfo: function(info) {
@@ -1607,7 +1607,8 @@
 
     Plugin.prototype = {
         init: function() {
-            var current = this.element;
+            var current     = this.element,
+                loadComment = $('#qvp-load-comments');
 
             current.on('click', '.close', function(){
                 var close          = $(this),
@@ -1693,23 +1694,23 @@
                 that    = this
 
             current.on('click', function(){
-                var currentNum = current.attr('data-current'),
+                var next       = parseInt(current.attr('data-next')),
                     loadBefore = current.attr('data-load-before');
 
                 $.ajax({
                     type: 'POST',
                     url: current.attr('data-url'),
-                    data: {_token: SETTING.CSRF_TOKEN, current: currentNum, before: loadBefore},
+                    data: {_token: SETTING.CSRF_TOKEN, next: next, before: loadBefore},
                     success: function(response) {
                         var comments = response.data.comments;
 
-                       that.showComments(comments);
+                       that.showComments(comments, next);
                     }
                 });
             });
 
         },
-        showComments: function(comments) {
+        showComments: function(comments, next) {
             var nodes          = '',
                 listComment    = $('.product-comment-tree li:eq(0)'),
                 loadComment    = $('#qvp-load-comments'),
@@ -1724,7 +1725,7 @@
                 });
 
                 listComment.before(nodes);
-                loadComment.attr('data-current', comments.current);
+                loadComment.attr('data-next', next + 1);
                 loadComment.html(LoadCommentTxt);
                 if (comments.empty) {
                     this.element.hide();

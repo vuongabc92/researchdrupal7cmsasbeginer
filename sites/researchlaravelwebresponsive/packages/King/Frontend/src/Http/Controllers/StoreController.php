@@ -247,7 +247,7 @@ class StoreController extends FrontController
             // Rebuild product data structure
             $productPath = config('front.product_path') . store()->id . '/';
             $product->toImage();
-
+            $comments = $product->comments;
             $data = [
                 'id'          => $product->id,
                 'name'        => $product->name,
@@ -262,16 +262,16 @@ class StoreController extends FrontController
                 ],
                 'pin'         => [
                     'count'             => $product->total_pin,
-                    'viewer_has_pinned' => $product->pin->isPinned()
+                    'viewer_has_pinned' => is_null($product->pin) ? false : $product->pin->isPinned()
                 ],
                 'comments' => [
                     'add_url'          => route('front_comments_add', $product->id),
                     'delete_url'       => route('front_comments_delete', [$product->id, '__COMMENT_ID']),
                     'more_url'         => route('front_comments_more', $product->id),
-                    'count'            => (($c = $product->comments) !== null) ? $c->count() : 0,
-                    'nodes'            => (($c = $product->comments) !== null) ? $this->_rebuildComment($c->take(-$maxComment)->all()) : [],
+                    'count'            => $comments->count(),
+                    'nodes'            => ($comments->count() > 0) ? $this->_rebuildComment($comments->take(-$maxComment)->all()) : [],
                     'view_all'         => ($product->comments->count() > ($maxComment)),
-                    'load_more_before' => $product->comments->take(-$maxComment)->last()->id
+                    'load_more_before' => ($comments->count() > 0) ? $comments->take(-$maxComment)->last()->id : 0
                 ],
                 'last_modified' => $product->updated_at
             ];
@@ -422,44 +422,66 @@ class StoreController extends FrontController
                 return pong(0, _t('not_found'), 404);
             }
 
-            $current  = (int) $request->get('current');
+            $next  = (int) $request->get('next');
             $before   = (int) $request->get('before');
-            $total    = Comment::where('product_id', $product_id)->where('id', '<=', $before)->count();// Total comments.
-            $max      = config('front.max_load_comments'); // Max number of comment to load.
-            $next     = ($current + 1) * $max; // Last comments include the next comments will be loaded.
-            $skip     = ($total > $next) ? $total - $next : 0; // Node of comment stop to take.
-            $take     = $this->getTake($total, $max, $current + 1); //Number of comment will be taked.
-            $nextTake = $total - (($current + 2) * $max);//Seem with take but for the next
-            if ($take > 0) {
-                $comments = Comment::where('product_id', $product_id)->where('id', '<', $before)->skip($skip)->take($take)->get();
-            } else {
-                $comments = [];
+            if (is_null($product->comments->find($before)) || $next === 0) {
+                return pong(0, _t('not_found'), 404);
             }
-            //var_dump($next);die;
+            $max      = config('front.max_load_comments');
+            $comments = $this->_getCommentsLoadMore($product_id, $before);
+            $total    = $comments->count();
+
+            $from     = ($next*$max);// Last comments include the next comments will be loaded.
+            $skip     = ($total > $from) ? $total - $from : 0;// Node of comment stop to take.
+            $take     = $this->_getLoadCommentsNum($total, $max, $next);//Number of comment will be taked.
+            if ($take['num'] > 0) {
+                $loadMore = $comments->skip($skip)->take($take['num'])->get();
+            } else {
+                $loadMore = [];
+            }
+
             return pong(1, ['data' => [
                 'comments' => [
-                    'nodes'   => $this->_rebuildComment($comments),
-                    'current' => ($nextTake > 0) ? $current + 1 : $current,
-                    'empty'   => $nextTake <= 0
+                    'nodes'   => $this->_rebuildComment($loadMore),
+                    'empty'   => $take['empty'],
+                    'debug' => [$skip, $take]
                 ]
             ]]);
         }
     }
 
-    function getTake($total, $max, $current) {
-        
-        if (($total - ($current*$max)) >= 0) {
-            return $max; 
+    protected function _getCommentsLoadMore($productId, $before) {
+        return Comment::where('product_id', $productId)->where('id', '<=', $before);
+    }
+
+
+    protected function _getLoadCommentsNum($total, $max, $next, $loop = false) {
+
+        $check = ($total - ($next*$max));
+
+        if ($check >= $max) {
+            return ['num' => $max, 'empty' => false];
         } else {
-            $next = ($current - 1)*$max;
-            while($total - $next < 0) {
-                $this->getTake($total, $max, $current - 1);
+
+            if($check > 0) {
+                return $loop ? $check : ['num' => $max, 'empty' => false];
             }
-            
-            return $total - $next;
+
+            if($check === 0) {
+                return $loop ? $check : ['num' => $max, 'empty' => true];
+            }
+
+            while ($check < 0) {
+
+                if (($n = $this->_getLoadCommentsNum($total, $max, $next - 1, true)) > 0) {
+                    return ['num' => $n, 'empty' => true];
+                }
+
+                return ['num' => 0, 'empty' => true];
+            }
         }
     }
-    
+
     /**
      * Rebuild comment with new data
      *
