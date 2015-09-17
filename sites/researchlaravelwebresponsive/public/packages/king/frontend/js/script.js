@@ -1143,12 +1143,16 @@
                         that.modal.modal('show');
                     }
                 });
+
+                return false;
             });
 
         },
         showComments: function(comments) {
             var nodes          = '',
                 listComment    = $('.product-comment-tree'),
+                loadMoreNode   = $('.product-comment-tree li:eq(0)'),
+                notFirstNode   = $('.product-comment-tree li:not(:first)'),
                 loadComment    = $('#qvp-load-comments'),
                 LoadCommentTxt = loadComment.data('text');
 
@@ -1159,12 +1163,17 @@
                 nodes += nodeStructure;
             });
 
-            listComment.html(nodes);
+            notFirstNode.remove();
+            loadMoreNode.after(nodes);
             listComment.attr('data-delete-comment-url', comments.delete_url);
             loadComment.html(LoadCommentTxt.replace('__COUNT', comments.count));
             loadComment.attr('data-url', comments.more_url);
-            loadComment.attr('data-next', 2);
             loadComment.attr('data-load-before', comments.load_more_before);
+            if (comments.view_all) {
+                loadMoreNode.show();
+            } else {
+                loadMoreNode.hide();
+            }
         },
         displayProductInfo: function(info) {
             var modal        = this.modal,
@@ -1175,14 +1184,6 @@
             modal.find('#qvp-comment-form').attr('action', info.comments.add_url);
             quickViewPin.html(info.pin.count);
             quickComment.html(info.comments.count);
-
-            if (info.comments.view_all) {
-                $('.qvp-view-all-comment button').show();
-                $('.product-comment-tree').css({height:'346px'});
-            } else {
-                $('.qvp-view-all-comment button').hide();
-                $('.product-comment-tree').css({height:'379px'});
-            }
 
         },
         initCarousel: function(images) {
@@ -1618,7 +1619,7 @@
                     deleteUrl      = ul.attr('data-delete-comment-url'),
                     productId      = $('#quick-view-product-modal').attr('data-product-id'),
                     quickComment   = $('.quick-view-product-comments'),
-                    productComment = $('.product-' + productId).find('.product-comment').find('b');;
+                    productComment = $('.product-' + productId).find('.product-comment').find('b');
 
                 deleteUrl = deleteUrl.replace('__COMMENT_ID', commentId);
 
@@ -1691,45 +1692,41 @@
     Plugin.prototype = {
         init: function() {
             var current = this.element,
-                that    = this
+                that    = this;
 
             current.on('click', function(){
-                var next       = parseInt(current.attr('data-next')),
-                    loadBefore = current.attr('data-load-before');
+                var before = $('.product-comment-tree li:eq(1)').attr('data-comment-id');
 
                 $.ajax({
                     type: 'POST',
                     url: current.attr('data-url'),
-                    data: {_token: SETTING.CSRF_TOKEN, next: next, before: loadBefore},
+                    data: {_token: SETTING.CSRF_TOKEN, before: before},
                     success: function(response) {
                         var comments = response.data.comments;
 
-                       that.showComments(comments, next);
+                       that.showComments(comments);
                     }
                 });
             });
 
         },
-        showComments: function(comments, next) {
-            var nodes          = '',
-                listComment    = $('.product-comment-tree li:eq(0)'),
-                loadComment    = $('#qvp-load-comments'),
-                LoadCommentTxt = loadComment.data('text-2');
+        showComments: function(comments) {
+            var nodes       = '',
+                lastComment = $('.product-comment-tree li:eq(0)'),
+                loadComment = $('#qvp-load-comments');
 
             if (comments.nodes.length) {
                 $.each(comments.nodes, function(k, v){
-                    var nodeStructure = (v.is_owner) ? SETTING.COMMENT_NODE_OWNER : SETTING.COMMENT_NODE;
+                    var nodeHtml = (v.is_owner) ? SETTING.COMMENT_NODE_OWNER : SETTING.COMMENT_NODE;
 
-                    nodeStructure = nodeStructure.replace('__OWNER_HREF', v.user.username).replace('__OWNER_NAME', v.user.username).replace('__CONTENT', v.text).replace('__COMMENT_ID', v.id);
-                    nodes += nodeStructure;
+                    nodeHtml = nodeHtml.replace('__OWNER_HREF', v.user.username).replace('__OWNER_NAME', v.user.username).replace('__CONTENT', v.text).replace('__COMMENT_ID', v.id);
+                    nodes   += nodeHtml;
                 });
 
-                listComment.before(nodes);
-                loadComment.attr('data-next', next + 1);
-                loadComment.html(LoadCommentTxt);
-                if (comments.empty) {
-                    this.element.hide();
-                    $('.product-comment-tree').css({height:'379px'});
+                lastComment.after(nodes);
+                loadComment.html(loadComment.data('text-2'));
+                if (comments.older_comments_empty) {
+                    this.element.parent('li').hide();
                 }
             }
         },

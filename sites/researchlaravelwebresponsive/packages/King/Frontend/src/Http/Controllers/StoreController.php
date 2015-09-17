@@ -271,7 +271,7 @@ class StoreController extends FrontController
                     'count'            => $comments->count(),
                     'nodes'            => ($comments->count() > 0) ? $this->_rebuildComment($comments->take(-$maxComment)->all()) : [],
                     'view_all'         => ($product->comments->count() > ($maxComment)),
-                    'load_more_before' => ($comments->count() > 0) ? $comments->take(-$maxComment)->last()->id : 0
+                    'load_more_before' => ($comments->count() > 0) ? $comments->take(-$maxComment)->first()->id : 0
                 ],
                 'last_modified' => $product->updated_at
             ];
@@ -417,41 +417,41 @@ class StoreController extends FrontController
 
         // Only accept ajax request with post method
         if ($request->ajax() && $request->isMethod('POST')) {
-            $product = product($product_id);
+
+            $productId = (int) $product_id;
+            $product   = product($productId);
+
             if (is_null($product)) {
                 return pong(0, _t('not_found'), 404);
             }
 
-            $next  = (int) $request->get('next');
-            $before   = (int) $request->get('before');
-            if (is_null($product->comments->find($before)) || $next === 0) {
+            $before = (int) $request->get('before');
+            if (is_null($product->comments->find($before))) {
                 return pong(0, _t('not_found'), 404);
             }
-            $max      = config('front.max_load_comments');
-            $comments = $this->_getCommentsLoadMore($product_id, $before);
-            $total    = $comments->count();
 
-            $from     = ($next*$max);// Last comments include the next comments will be loaded.
-            $skip     = ($total > $from) ? $total - $from : 0;// Node of comment stop to take.
-            $take     = $this->_getLoadCommentsNum($total, $max, $next);//Number of comment will be taked.
-            if ($take['num'] > 0) {
-                $loadMore = $comments->skip($skip)->take($take['num'])->get();
-            } else {
-                $loadMore = [];
-            }
+            $max              = config('front.max_load_comments');
+            $comments         = $this->_loadMoreComents($productId, $before)->take($max)->get();
+            $commentsNextLoad = $this->_loadMoreComents($productId, $comments->last()->id)->take(1)->count();
 
             return pong(1, ['data' => [
                 'comments' => [
-                    'nodes'   => $this->_rebuildComment($loadMore),
-                    'empty'   => $take['empty'],
-                    'debug' => [$skip, $take]
+                    'nodes'                => $this->_rebuildComment($comments->sortBy('id')),
+                    'older_comments_empty' => $commentsNextLoad === 0,
                 ]
             ]]);
         }
     }
 
-    protected function _getCommentsLoadMore($productId, $before) {
-        return Comment::where('product_id', $productId)->where('id', '<=', $before);
+    protected function _loadMoreComents($productId, $before = 0) {
+
+        $comment = Comment::where('product_id', $productId);
+
+        if ($before) {
+            $comment->where('id', '<', $before);
+        }
+
+        return $comment->orderBy('id', 'DESC');
     }
 
 

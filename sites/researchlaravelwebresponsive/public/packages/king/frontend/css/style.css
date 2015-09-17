@@ -145,7 +145,7 @@ body{background-color:#f5f8fa;}
 .-qvp-handle .close{height:21px;font-size:29px;margin-top:-6px;font-weight:normal;}
 .-qvp-details{color:#55A1F5;}
 .-qvp-details:hover{color:#007aff;text-decoration:none;}
-.-qvp-view-more-comments{background-color:transparent;border:none;outline:none;color:#999;padding:3px 20px 10px 20px;display:none;}
+.-qvp-view-more-comments{background-color:transparent;border:none;outline:none;color:#999;}
 .-qvp-view-more-comments:hover{color:#666;}
 .-qvp-comments-tree{height:346px;overflow-y:auto;padding:0 20px 20px 20px;color:#777;font-size:14px;}
 .-qvp-comments-tree>li{width:100%;float:left;font-size:14px;color:#777;margin-bottom:7px;}
