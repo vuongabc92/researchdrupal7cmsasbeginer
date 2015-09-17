@@ -24,18 +24,36 @@
             </div>
             <div class="_fwfl store-nav-bar">
                 <ul class="_fwfl _fh _ls store-nav-list">
-                    <li><a href="#"><b>{{ _t('store_product') }} <span class="_fs12">({{ $productCount }})</span></b></a></li>
-                    <li><a href="#"><b>{{ _t('store_contact') }}</b></a></li>
-                    <li><a href="#"><b>{{ _t('store_rating') }} <span class="_fs12">(17)</span></b></a></li>
-                    <li><a href="#"><b>{{ _t('store_follow') }} <span class="_fs12">(22)</span></b></a></li>
-                    <li data-toggle="modal" data-target="#add-product-modal">
-                        <a href="javascript:;" id="add-product-tooltip" data-toggle="tooltip" data-placement="bottom" data-original-title="{{ _t('add_product') }}">
-                            <b><i class="_fs14 fa fa-plus"></i></b>
+                    <li>
+                        <a href="#" title="{{ _t('store_product') }}">
+                            <span class="-nav-text">{{ _t('store_product') }}</span>
+                            <span class="-nav-icon fa fa-home"></span>
+                            <span class="-nav-count _r3">{{ $productCount }}</span>
                         </a>
                     </li>
                     <li>
-                        <a href="#" id="search-product-tooltip" data-toggle="tooltip" data-placement="bottom" data-original-title="{{ _t('search_in_store') }}">
-                            <b><i class="_fs14 fa fa-search"></i></b>
+                        <a href="#" title="{{ _t('store_contact') }}">
+                            <span class="-nav-text">{{ _t('store_contact') }}</span>
+                            <span class="-nav-icon fa fa-comment"></span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" title="{{ _t('store_rating') }}">
+                            <span class="-nav-text">{{ _t('store_rating') }}</span>
+                            <span class="-nav-icon fa fa-star"></span>
+                            <span class="-nav-count _r3">17</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" title="{{ _t('store_follow') }}">
+                            <span class="-nav-text">{{ _t('store_follow') }}</span>
+                            <span class="-nav-icon fa fa-bug"></span>
+                            <span class="-nav-count _r3">22</span>
+                        </a>
+                    </li>
+                    <li data-toggle="modal" data-target="#add-product-modal">
+                        <a href="javascript:;" class="add-product-nav" id="add-product-tooltip" data-toggle="tooltip" data-placement="bottom" data-original-title="{{ _t('add_product') }}">
+                            <span class="fa fa-plus"></span>
                         </a>
                     </li>
                 </ul>

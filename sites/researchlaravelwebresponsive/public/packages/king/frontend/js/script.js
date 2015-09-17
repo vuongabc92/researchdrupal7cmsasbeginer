@@ -1692,7 +1692,8 @@
     Plugin.prototype = {
         init: function() {
             var current = this.element,
-                that    = this;
+                that    = this,
+                loading = $('#qvp-more-comment-loading');
 
             current.on('click', function(){
                 var before = $('.product-comment-tree li:eq(1)').attr('data-comment-id');
@@ -1700,15 +1701,18 @@
                 $.ajax({
                     type: 'POST',
                     url: current.attr('data-url'),
+                    beforeSend: function(){
+                        loading.show();
+                    },
                     data: {_token: SETTING.CSRF_TOKEN, before: before},
                     success: function(response) {
                         var comments = response.data.comments;
 
-                       that.showComments(comments);
+                        that.showComments(comments);
+                        loading.hide();
                     }
                 });
             });
-
         },
         showComments: function(comments) {
             var nodes       = '',

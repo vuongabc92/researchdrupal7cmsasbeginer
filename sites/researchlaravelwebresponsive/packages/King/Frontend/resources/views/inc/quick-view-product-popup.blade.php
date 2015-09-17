@@ -58,7 +58,7 @@
                     <a href="#" class="_fr _fs13 _fwb _mt7 -qvp-details">Details...</a>
                 </div>
                 <ul class="_fwfl _ls -qvp-comments-tree product-comment-tree" data-delete-comment-url="" data-delete-comment>
-                    <li><button class="-qvp-view-more-comments" id="qvp-load-comments" data-text="View all __COUNT comments" data-text-2="Load more comments" data-url data-load-before data-load-more-comments></button></li>
+                    <li><button class="-qvp-view-more-comments" id="qvp-load-comments" data-text="View all __COUNT comments" data-text-2="Load more comments" data-url data-load-before data-load-more-comments></button> <img src="{{ asset('packages/king/frontend/images/loading-blue-white-16x16.gif') }}" class="-qvp-more-comment-loading" id="qvp-more-comment-loading"/></li>
                 </ul>
                 <div class="_fwfl -qvp-comment-frm-container">
                     <form class="_fwfl -qvp-comment-form" id="qvp-comment-form" action="" method="POST" data-comments-product>
@@ -68,8 +68,6 @@
                     </form>
                 </div>
             </div>
-
-
         </div>
     </div>
 </div>

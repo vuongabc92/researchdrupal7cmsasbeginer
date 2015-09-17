@@ -392,7 +392,5 @@ button._btn-sm{height: 30px;line-height:17px;}
 /* Tooltip */
 .tooltip-inner{padding:4px 8px;border-radius:2px;-webkit-border-radius:2px;
 -moz-border-radius:2px;-ms-border-radius:2px;-o-border-radius:2px;}
-/* Tab */
-.quick-view-modal-body .nav-tabs > li.active > a, .nav-tabs > li.active > a:hover, .nav-tabs > li.active > a:focus{outline:none;color:#777;}
-.quick-view-modal-body .nav-tabs > li > a {border-radius: 2px 2px 0 0;font-size:15px;}
-.quick-view-modal-body .nav > li > a {padding: 10px 22px;}
+/* Modal */
+.modal .modal-header > .close {font-weight:normal;font-size:25px;}
