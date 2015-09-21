@@ -15,8 +15,12 @@ class Pin extends Base
     public $timestamps = false;
     
     public function isPinned() {
-
-        $userId   = Container::getInstance()->make('Illuminate\Contracts\Auth\Guard')->user()->id;
+        
+        $auth = Container::getInstance()->make('Illuminate\Contracts\Auth\Guard');
+        if ($auth->guest()) {
+            return false;
+        }
+        $userId   = $auth->user()->id;
         $pinUsers = json_decode($this->user_id, true);
 
         return isset($pinUsers[$userId]);

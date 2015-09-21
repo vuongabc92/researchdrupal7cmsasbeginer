@@ -30,4 +30,6 @@ return [
 
     'SESSION_LOCATION' => '_current_location',
     'DEFAULT_LOCATION' => 1,
+    
+    'CURRENT_STORE' => '_current_store'
 ];

@@ -726,28 +726,13 @@
     Plugin.prototype = {
         init: function() {
             var current     = this.element,
-                url         = current.data('select-location'),
-                fromTarget  = current.data('from-to-target').split('|'),
-                from        = $(fromTarget[0]),
-                target      = $(fromTarget[1]);
+                url         = current.data('select-location');
 
-            from.on('click', 'li', function(){
-                var id   = $(this).attr('data-value'),
-                    name = $(this).find('.location-name').text();
-
-                $.ajax({
-                    type: 'GET',
-                    url: url.replace('0', id),
-                    beforeSend: function() {
-                    },
-                    success: function(response) {
-                        if (response.status === SETTING.AJAX_OK) {
-                            target.text(name);
-                        }
-                    }
-                });
-
-                return true;
+            current.on('click', 'li', function(){
+                var id = $(this).attr('data-value');
+                
+                url = url.replace('__ID', id);
+                window.location.replace(url);
             });
         },
         destroy: function() {

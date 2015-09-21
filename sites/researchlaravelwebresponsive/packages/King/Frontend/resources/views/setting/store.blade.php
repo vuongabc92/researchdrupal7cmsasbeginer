@@ -43,7 +43,7 @@ Setting > Store
                     </div>
                 </div>
                 @endif
-                {!! Form::model($store, ['route' => 'front_setting_store_change','method' => 'POST', 'id' => 'save-store-form', 'data-ajax-form' => 'name|category_id|street|city_id|district_id|ward_id|phone_number']) !!}
+                {!! Form::model($store, ['route' => 'front_setting_store_change','method' => 'POST', 'id' => 'save-store-form', 'data-ajax-form' => 'name|slug|category_id|street|city_id|district_id|ward_id|phone_number']) !!}
                     <div class="_fwfl setting-group">
                         <div class="_fl setting-field-left">
                             <b class="_fwfl _fs13 _tg5">{{ _t('basic_info') }}</b>
@@ -52,6 +52,10 @@ Setting > Store
                             <div class="_fl setting-form-group setting-form-group-store">
                                 <label class="_fwfl setting-form-label" for="name" data-title="{{ _t('store_name') }}">{{ _t('store_name') }}</label>
                                 {!! Form::text('name', null, ['class' => '_fwfl setting-form-field', 'id' => 'name', 'maxlength' => '250']) !!}
+                            </div>
+                            <div class="_fl setting-form-group setting-form-group-store">
+                                <label class="_fwfl setting-form-label" for="slug" data-title="{{ _t('store_slug') }}">{{ _t('store_slug') }}</label>
+                                {!! Form::text('slug', null, ['class' => '_fwfl setting-form-field', 'id' => 'slug', 'maxlength' => '250']) !!}
                             </div>
                             <div class="_fl setting-form-group setting-form-group-store">
                                 <label class="_fwfl setting-form-label" for="category" data-title="{{ _t('category') }}">{{ _t('category') }}</label>

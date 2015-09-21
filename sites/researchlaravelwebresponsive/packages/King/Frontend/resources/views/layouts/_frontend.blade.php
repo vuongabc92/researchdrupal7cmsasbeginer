@@ -39,7 +39,7 @@
                                             {!! Form::close() !!}
                                         </div>
                                         <div class="_fwfl popup-body">
-                                            <ul class="_fwfl _ls list-location" id="list-location" data-select-location="{{ route('front_select_location', 0) }}" data-from-to-target=".popup-body|#current-location-name">
+                                            <ul class="_fwfl _ls list-location" id="list-location" data-select-location="{{ route('front_select_location', '__ID') }}">
                                                 @if (count(locations()))
                                                     @foreach(locations() as $one)
                                                         <li data-value="{{ $one->id }}">
@@ -81,12 +81,12 @@
                                     <li role="separator" class="divider"></li>
                                     <li>
                                         @if(user()->has_store)
-                                            <a href="{{ route('front_my_store') }}">
+                                            <a href="{{ route('front_astore', user()->store->slug) }}">
                                                 <i class="fa fa-eye"></i>
                                                 <span>{{ _t('view_store') }}</span>
                                             </a>
                                         @else
-                                            <a href="#">
+                                            <a href="{{ route('front_setting_store') }}">
                                                 <i class="fa fa-eye"></i>
                                                 <span>{{ _t('create_store_link') }}</span>
                                             </a>

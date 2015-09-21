@@ -39,16 +39,20 @@ if ( ! function_exists('store')) {
      *
      * @return \App\Models\Store|null
      */
-    function store() {
-        if (user()->has_store) {
+    function store($id = 0) {
+        if ($id) {
+            return \App\Models\Store::find($id);
+        }
+        
+        if ( ! is_null(user()) && user()->has_store) {
             return user()->store;
         }
-
+        
         return null;
     }
 }
 
-if ( ! function_exists('get_product')) {
+if ( ! function_exists('product')) {
     /**
      * Find product in current store by id
      *
@@ -57,7 +61,11 @@ if ( ! function_exists('get_product')) {
      * @return \App\Model\Product
      */
     function product($id) {
-
+        
+        if (is_null(store())) {
+            return App\Models\Product::find($id);
+        }
+        
         return store()->products->find($id);
     }
 }
@@ -180,8 +188,8 @@ if ( ! function_exists('cover_size')) {
      * @return boolean|string
      */
     function cover_size($size = false){
-        if ($size && user()->has_store) {
-            $cover      = 'cover_' . $size;
+        if ($size) {
+            $cover     = 'cover_' . $size;
             $coverPath = config('front.cover_path') . store()->$cover;
             if (check_file($coverPath)) {
                 return asset($coverPath);
@@ -534,11 +542,10 @@ if ( ! function_exists('current_location')) {
      * @return \App\Models\City
      */
     function current_location() {
-
+        
         $currentId = session(_const('SESSION_LOCATION'), _const('DEFAULT_LOCATION'));
-        $location   = \App\Models\City::find($currentId);
-
-        return $location;
+        
+        return \App\Models\City::find($currentId);
     }
 }
 

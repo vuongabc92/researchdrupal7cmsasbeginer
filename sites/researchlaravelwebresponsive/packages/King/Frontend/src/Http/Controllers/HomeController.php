@@ -10,6 +10,7 @@ namespace King\Frontend\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\City;
+use Session;
 
 class HomeController extends FrontController
 {
@@ -43,26 +44,17 @@ class HomeController extends FrontController
      * @param \Illuminate\Http\Request $request
      * @param int                      $id City id
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return Redirect
      */
-    public function ajaxSelectLocation(Request $request, $id) {
+    public function selectLocation($id) {
 
-        //Only accept ajax request
-        if ($request->ajax()) {
-
-            $id = (int) $id;
-
-            if (City::find($id) !== null) {
-
-                //Start session if it wasn't started
-                if ( ! $request->session()->isStarted()) {
-                    $request->session()->start();
-                }
-
-                $request->session()->put(_const('SESSION_LOCATION'), $id);
-
-                return pong(1, _t('saved_info'));
-            }
+        $id = (int) $id;
+        if ( ! is_null(City::find($id))) {
+            
+            Session::put(_const('SESSION_LOCATION'), $id);
+            Session::save();
+            
+            return redirect(route('front_home'));
         }
     }
 }

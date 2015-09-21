@@ -2,8 +2,11 @@
 
 namespace App\Models;
 
+use Str;
+
 class Store extends Base
 {
+    protected $_strRandNum = 5;
     /**
      * The database table used by the model.
      *
@@ -58,6 +61,22 @@ class Store extends Base
         return $this->hasMany('App\Models\Product');
     }
     
+    public function generateSlugUri() {
+        if ($this->slug === '') {
+            $slug = Str::camel($this->name . '-' . $this->id);
+            
+            if( ! is_null($this->findStoreBySlug($slug))) {
+                $this->generateSlugUri($slug . $this->id + Str::random($this->_strRandNum));
+            }
+            
+            return $slug;
+        }
+    }
+    
+    public function findStoreBySlug($slug) {
+        return $this->where('slug', $slug)->get();
+    }
+    
     /**
      * Get store validation rules
      * 
@@ -65,7 +84,8 @@ class Store extends Base
      */
     public function getRules() {
         return [
-            'name'         => 'required|min:10|max:250',
+            'name'         => 'required|min:3|max:250',
+            'slug'         => 'required|min:3|max:250|alpha_dash|unique:stores,slug',
             'category_id'  => 'required|integer|exists:categories,id',
             'street'       => 'required|max:250',
             'city_id'      => 'required|integer|exists:cities,id',
@@ -86,6 +106,11 @@ class Store extends Base
             'name.required'         => _t('store_name_req'),
             'name.min'              => _t('store_name_min'),
             'name.max'              => _t('store_name_max'),
+            'slug.required'         => _t('store_slug_req'),
+            'slug.min'              => _t('store_slug_min'),
+            'slug.max'              => _t('store_slug_max'),
+            'slug.alpha_dash'       => _t('store_slug_alpha_dash'),
+            'slug.unique'           => _t('store_slug_unique'),
             'category_id.required'  => _t('category_id_req'),
             'category_id.integer'   => _t('category_id_int'),
             'category_id.exists'    => _t('category_id_exi'),

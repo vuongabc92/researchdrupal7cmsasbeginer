@@ -4,8 +4,7 @@ Route::get('/', ['as' => 'front_home', 'uses' => 'HomeController@index']);
 
 //Location
 Route::post('/search-location', ['as' => 'front_search_location', 'uses' => 'HomeController@ajaxSearchLocation']);
-Route::get('/select-location/{id}', ['as' => 'front_select_location', 'uses' => 'HomeController@ajaxSelectLocation']);
-
+Route::get('/select-location/{id}', ['as' => 'front_select_location', 'uses' => 'HomeController@selectLocation']);
 //Logout
 Route::get('logout', ['as' => 'front_logout', 'uses' => 'AuthController@logout']);
 
@@ -30,12 +29,12 @@ Route::group(['middleware' => 'auth'], function(){
         $route->post('store/change-cover', ['as' => 'front_setting_change_cover', 'uses' => 'SettingController@ajaxChangeCover']);
 
         //Store
-        $route->get('my-store', ['as' => 'front_my_store', 'uses' => 'StoreController@index']);
+//        $route->get('my-store', ['as' => 'front_my_store', 'uses' => 'StoreController@index']);
         $route->post('save-product', ['as' => 'front_save_product', 'uses' => 'StoreController@ajaxSaveProduct']);
         $route->post('upload-product-image', ['as' => 'front_product_image', 'uses' => 'StoreController@ajaxUploadProductImage']);
         $route->get('product-del-temp-img', ['as' => 'front_product_del_temp_img', 'uses' => 'StoreController@ajaxDeleteProductTempImg']);
         $route->get('find-product-by-id/{id}', ['as' => 'front_find_product_by_id', 'uses' => 'StoreController@ajaxFindProductById']);
-        $route->get('find-product-by-id/{id}/{full}', ['as' => 'front_find_product_by_id', 'uses' => 'StoreController@ajaxFindProductById']);
+        
         $route->delete('delete-product', ['as' => 'front_delete_product', 'uses' => 'StoreController@ajaxDeleteProduct']);
     });
 
@@ -46,3 +45,6 @@ Route::group(['middleware' => 'auth'], function(){
         $route->post('comments/{product_id}/more', ['as' => 'front_comments_more', 'uses' => 'StoreController@ajaxLoadMoreComments']);
     });
 });
+Route::get('find-product-by-id/{id}/{full}', ['as' => 'front_find_product_by_id', 'uses' => 'StoreController@ajaxFindProductById']);
+
+Route::get('/{slug}', ['as' => 'front_astore', 'uses' => 'StoreController@store']);

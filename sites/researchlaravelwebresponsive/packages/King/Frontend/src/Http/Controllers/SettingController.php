@@ -336,7 +336,10 @@ class SettingController extends FrontController
                 $store = store();
             }
 
-            $rules     = $store->getRules();
+            $rules = $store->getRules();
+            if (str_equal($store->slug, $request->get('slug'))) {
+                $rules = remove_rules($rules, 'slug.unique:stores,slug');
+            }
             $messages  = $store->getMessages();
             $validator = Validator::make($request->all(), $rules, $messages);
 
@@ -353,7 +356,18 @@ class SettingController extends FrontController
                 $store->district_id  = $request->get('district_id');
                 $store->ward_id      = $request->get('ward_id');
                 $store->phone_number = $request->get('phone_number');
-
+                
+                if ($store->slug === '') {
+                    $slug = str_slug($store->name);
+                    if ($store->findStoreBySlug($slug) !== null) {
+                        $store->slug = $slug . '-' . $user->id;
+                    } else {
+                        $store->slug = $slug;
+                    }
+                } else {
+                    $store->slug = str_replace('_', '-', $request->get('slug'));
+                }
+                
                 if ($store->save()) {
 
                     $user->has_store = true;

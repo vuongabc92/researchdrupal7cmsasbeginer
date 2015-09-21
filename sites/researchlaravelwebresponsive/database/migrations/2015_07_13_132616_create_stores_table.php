@@ -16,6 +16,7 @@ class CreateStoresTable extends Migration
             $table->increments('id');
             $table->integer('user_id')->unsigned();
             $table->string('name', 250);
+            $table->string('slug', 250);
             $table->integer('category_id')->unsigned();
             $table->string('street', 250)->nullable();
             $table->integer('city_id')->unsigned();

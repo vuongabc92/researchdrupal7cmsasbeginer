@@ -11,12 +11,14 @@ namespace King\Frontend\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Validator;
+use Session;
 use App\Helpers\Upload;
 use App\Helpers\FileName;
 use App\Helpers\Image;
 use App\Models\Product;
 use App\Models\Pin;
 use App\Models\Comment;
+use App\Models\Store;
 
 class StoreController extends FrontController
 {
@@ -43,10 +45,28 @@ class StoreController extends FrontController
      *
      * @return response
      */
-    public function index() {
+    public function index() {        
         return view('frontend::store.index', [
             'productCount' => store()->products->count(),
             'products'     => store()->products
+        ]);
+    }
+    
+    public function store($slug) {
+        
+        $store = Store::where('slug', $slug)->first();
+
+        if ($store === null) {
+            throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException('Store Not Found.');
+        }
+        
+        return view('frontend::store.index', [
+            'productCount' => $store->products->count(),
+            'products'     => $store->products,
+            'store'        => $store,
+            'storeCover'   => config('front.cover_path') . $store->cover_big, 
+            'productPath'  => config('front.product_path') . $store->id . '/',
+            'storeOwner'   => auth()->guest() ? false : ($store->user_id === user()->id)
         ]);
     }
 
@@ -58,7 +78,7 @@ class StoreController extends FrontController
      * @return type
      */
     public function ajaxSaveProduct(Request $request) {
-
+        
         //Only accept ajax request
         if ($request->ajax() && $request->isMethod('POST')) {
 
@@ -501,7 +521,7 @@ class StoreController extends FrontController
                         'id'       => $comment->user->id,
                         'username' => $comment->user->user_name
                     ],
-                    'is_owner' => ($comment->user->id === user()->id)
+                    'is_owner' => is_null(user()) ? false : ($comment->user->id === user()->id)
                 ];
             }
         }
