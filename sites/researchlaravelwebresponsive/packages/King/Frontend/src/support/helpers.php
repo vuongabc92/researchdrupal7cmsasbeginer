@@ -41,13 +41,13 @@ if ( ! function_exists('store')) {
      */
     function store($id = 0) {
         if ($id) {
-            return \App\Models\Store::find($id);
+            return App\Models\Store::find($id);
         }
-        
-        if ( ! is_null(user()) && user()->has_store) {
+
+        if ( user() !== null && user()->store !== null) {
             return user()->store;
         }
-        
+
         return null;
     }
 }
@@ -61,11 +61,10 @@ if ( ! function_exists('product')) {
      * @return \App\Model\Product
      */
     function product($id) {
-        
-        if (is_null(store())) {
+        if (store() !== null) {
             return App\Models\Product::find($id);
         }
-        
+
         return store()->products->find($id);
     }
 }
@@ -542,9 +541,9 @@ if ( ! function_exists('current_location')) {
      * @return \App\Models\City
      */
     function current_location() {
-        
+
         $currentId = session(_const('SESSION_LOCATION'), _const('DEFAULT_LOCATION'));
-        
+
         return \App\Models\City::find($currentId);
     }
 }

@@ -10,7 +10,7 @@
         <div class="_fwfl store-header">
             <div class="_fwfl store-cover">
                 <div class="_fwfl _fh store-cover-img cover-big" style="background-image:url('{{ $storeCover }}')">
-                    @if($storeOwner)
+
                     <button class="_fr _m10 btn _btn-sm _btn-black-opacity choose-cover-btn" data-event-trigger="#cover-file" data-event="click|click">
                         <img class="loading-in-btn-sm" src="{{ asset('packages/king/frontend/images/loading-black-opacity-24x24.gif') }}" />
                         <b>{{ _t('store_change_cover') }}</b>
@@ -21,7 +21,7 @@
                         {!! Form::file('__file', ['class' => 'field-file-hidden', 'id' => 'cover-file', 'accept' => 'image/*', 'data-event-trigger' => '#upload-cover-form', 'data-event' => 'change|submit']) !!}
                         {!! Form::close() !!}
                     </div>
-                    @endif
+                    
                 </div>
             </div>
             <div class="_fwfl store-nav-bar">
@@ -53,13 +53,13 @@
                             <span class="-nav-count _r3">22</span>
                         </a>
                     </li>
-                    
+
                     <li data-toggle="modal" data-target="#add-product-modal">
                         <a href="javascript:;" class="add-product-nav" id="add-product-tooltip" data-toggle="tooltip" data-placement="bottom" data-original-title="{{ _t('add_product') }}">
                             <span class="fa fa-plus"></span>
                         </a>
                     </li>
-                    
+
                 </ul>
             </div>
         </div>
@@ -116,7 +116,7 @@
                                             </li>
                                         </ul>
                                     </div>
-                                </div>                  
+                                </div>
                                 @endif
                             </div>
                             <div class="product-body">
@@ -145,7 +145,7 @@
     </div>
 </div>
 
-@include('frontend::inc.save-product-popup')                    
+@include('frontend::inc.save-product-popup')
 
 
 @include('frontend::inc.quick-view-product-popup')

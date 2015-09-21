@@ -13,7 +13,7 @@ class StoreOwner
      * @var Guard
      */
     protected $auth;
-    
+
     /**
      * Create a new filter instance.
      *
@@ -24,7 +24,7 @@ class StoreOwner
     {
         $this->auth = $auth;
     }
-    
+
     /**
      * Handle an incoming request.
      *
@@ -34,14 +34,14 @@ class StoreOwner
      */
     public function handle($request, Closure $next)
     {
-//        if ($this->auth->check()) {
-//            if ($request->ajax()) {
-//                return response('Unauthorized.', 401);
-//            } else {
-//                return redirect()->guest(route('front_login'));
-//            }
-//        }
-        
+        if ($this->auth->check() && $this->auth->user()->store === null) {
+            if ($request->ajax()) {
+                return response('Unauthorized.', 401);
+            } else {
+                return redirect()->guest(route('front_home'));
+            }
+        }
+        die(':D');
         return $next($request);
     }
 }

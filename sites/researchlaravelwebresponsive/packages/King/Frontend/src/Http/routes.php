@@ -26,15 +26,17 @@ Route::group(['middleware' => 'auth'], function(){
         $route->post('store/change-info', ['as' => 'front_setting_store_change', 'uses' => 'SettingController@ajaxSaveStoreInfo']);
         $route->get('store/get-district/{id}', ['as' => 'front_setting_get_district', 'uses' => 'SettingController@ajaxGetDistrictByCityId']);
         $route->get('store/get-ward/{id}', ['as' => 'front_setting_get_ward', 'uses' => 'SettingController@ajaxGetWardByCityId']);
-        $route->post('store/change-cover', ['as' => 'front_setting_change_cover', 'uses' => 'SettingController@ajaxChangeCover']);
 
+        Route::group(['middleware' => 'store_owner'], function($route){
+            $route->post('store/change-cover', ['as' => 'front_setting_change_cover', 'uses' => 'SettingController@ajaxChangeCover']);
+        });
         //Store
 //        $route->get('my-store', ['as' => 'front_my_store', 'uses' => 'StoreController@index']);
         $route->post('save-product', ['as' => 'front_save_product', 'uses' => 'StoreController@ajaxSaveProduct']);
         $route->post('upload-product-image', ['as' => 'front_product_image', 'uses' => 'StoreController@ajaxUploadProductImage']);
         $route->get('product-del-temp-img', ['as' => 'front_product_del_temp_img', 'uses' => 'StoreController@ajaxDeleteProductTempImg']);
         $route->get('find-product-by-id/{id}', ['as' => 'front_find_product_by_id', 'uses' => 'StoreController@ajaxFindProductById']);
-        
+
         $route->delete('delete-product', ['as' => 'front_delete_product', 'uses' => 'StoreController@ajaxDeleteProduct']);
     });
 
