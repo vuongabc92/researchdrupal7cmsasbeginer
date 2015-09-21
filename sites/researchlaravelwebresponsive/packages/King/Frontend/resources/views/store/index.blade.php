@@ -6,11 +6,11 @@
 
 @section('content')
 <div class="_mw970 _ma">
-    <div class="_fwfl store-container">
+    <div class="_fwfl store-container" id="store-container" data-store-slug="{{ $store->slug }}">
         <div class="_fwfl store-header">
             <div class="_fwfl store-cover">
                 <div class="_fwfl _fh store-cover-img cover-big" style="background-image:url('{{ $storeCover }}')">
-
+                    @if($storeOwner)
                     <button class="_fr _m10 btn _btn-sm _btn-black-opacity choose-cover-btn" data-event-trigger="#cover-file" data-event="click|click">
                         <img class="loading-in-btn-sm" src="{{ asset('packages/king/frontend/images/loading-black-opacity-24x24.gif') }}" />
                         <b>{{ _t('store_change_cover') }}</b>
@@ -21,7 +21,7 @@
                         {!! Form::file('__file', ['class' => 'field-file-hidden', 'id' => 'cover-file', 'accept' => 'image/*', 'data-event-trigger' => '#upload-cover-form', 'data-event' => 'change|submit']) !!}
                         {!! Form::close() !!}
                     </div>
-                    
+                    @endif
                 </div>
             </div>
             <div class="_fwfl store-nav-bar">
@@ -53,13 +53,13 @@
                             <span class="-nav-count _r3">22</span>
                         </a>
                     </li>
-
+                    @if($storeOwner)
                     <li data-toggle="modal" data-target="#add-product-modal">
                         <a href="javascript:;" class="add-product-nav" id="add-product-tooltip" data-toggle="tooltip" data-placement="bottom" data-original-title="{{ _t('add_product') }}">
                             <span class="fa fa-plus"></span>
                         </a>
                     </li>
-
+                    @endif
                 </ul>
             </div>
         </div>
@@ -98,13 +98,13 @@
                                         </button>
                                     </li>
                                 </ul>
-                                @if($storeOwner)
+                                @if(!$storeOwner)
                                 <div class="product-control">
                                     <div class="btn-group">
                                         <i class="fa fa-gear product-config-btn _r2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></i>
                                         <ul class="dropdown-menu product-control-drop">
                                             <li>
-                                                <a href="{{ route('front_find_product_by_id', $product->id) }}" data-edit-product-form class="product-edit" data-toggle="tooltip" data-placement="left" data-original-title="{{ _t('product_edit') }}">
+                                                <a href="{{ route('front_product_byid', $product->id) }}" data-edit-product-form class="product-edit" data-toggle="tooltip" data-placement="left" data-original-title="{{ _t('product_edit') }}">
                                                     <i class="fa fa-pencil"></i>
                                                 </a>
                                             </li>
@@ -121,7 +121,7 @@
                             </div>
                             <div class="product-body">
                                 <div class="product-image">
-                                    <a href="{{ route('front_find_product_by_id', [$product->id, 'fz']) }}" data-product-quick-view>
+                                    <a href="{{ route('front_full_product_byid', [$product->id, 'fz']) }}" data-product-quick-view>
                                         <img src="{{ ($product->image_1 !== null) ? asset($productPath . $product->image_1->medium) : '' }}" alt="{{ $product->name }}" />
                                     </a>
                                 </div>
@@ -145,7 +145,7 @@
     </div>
 </div>
 
-@include('frontend::inc.save-product-popup')
+@include('frontend::inc.save-product-popup', ['slug' => $store->slug])
 
 
 @include('frontend::inc.quick-view-product-popup')

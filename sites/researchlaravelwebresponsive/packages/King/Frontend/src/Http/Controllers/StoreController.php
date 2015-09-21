@@ -11,7 +11,6 @@ namespace King\Frontend\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Validator;
-use Session;
 use App\Helpers\Upload;
 use App\Helpers\FileName;
 use App\Helpers\Image;
@@ -34,8 +33,7 @@ class StoreController extends FrontController
      */
     protected $_productImgSizes;
 
-    public function __construct(Product $product)
-    {
+    public function __construct(Product $product) {
         $this->_product         = $product;
         $this->_productImgSizes = config('front.product_img_size');
     }
@@ -81,10 +79,24 @@ class StoreController extends FrontController
         
         //Only accept ajax request
         if ($request->ajax() && $request->isMethod('POST')) {
-
+            
+            if (user()->store === null) {
+                $store = store($request->get('store_slug'), true);
+            } else {
+                $store = store();
+            }
+            
+            if ($store === null) {
+                return pong(0, _t('not_found'), 404);
+            }
+            
             $productId = (int) $request->get('id');
-            $product   = $this->_getProduct($productId);
-
+            if ($productId) {
+                $product = $store->products->find($productId);
+            } else {
+                $product = new Product();
+            }
+            
             $rules     = $this->_product->getRules();
             $messages  = $this->_product->getMessages();
 
@@ -125,9 +137,9 @@ class StoreController extends FrontController
                 if ($productId) {
                     $this->_deleteOldImages($images, $product->images);
                 }
-
+                
                 // 3
-                $product->store_id    = store()->id;
+                $product->store_id    = $store->id;
                 $product->name        = $request->get('name');
                 $product->price       = $request->get('price');
                 $product->old_price   = $request->get('old_price');
@@ -572,24 +584,6 @@ class StoreController extends FrontController
         $pin->save();
 
         return ['isPinned' => $pinned, 'totalPin' => $product->total_pin];
-    }
-
-    /**
-     * Get product entity
-     *
-     * @param int $id Product id
-     *
-     * @return App\Models\Product
-     */
-    protected function _getProduct($id = 0) {
-
-        if ($id) {
-            $product = product($id);
-        } else {
-            $product = new Product();
-        }
-
-        return $product;
     }
 
     /**

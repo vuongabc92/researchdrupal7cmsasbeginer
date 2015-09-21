@@ -54,7 +54,7 @@ class SettingController extends FrontController
     public function ajaxChangePassword(Request $request)
     {
         //Only accept AJAX request
-        if ($request->ajax()) {
+        if ($request->ajax() && $request->isMethod('POST')) {
 
             $rules     = $this->_getPasswordRules();
             $messages  = $this->_getPasswordMessages();
@@ -98,7 +98,7 @@ class SettingController extends FrontController
     public function ajaxSaveBasicInfo(Request $request)
     {
         //Only accept ajax request.
-        if ($request->ajax()) {
+        if ($request->ajax() && $request->isMethod('POST')) {
 
             $rules     = remove_rules($this->_user->getRules(), 'password.min:6');
             $messages  = $this->_user->getMessages();
@@ -262,7 +262,7 @@ class SettingController extends FrontController
         $categories = select(Category::select('id', 'name')->get());
         $store      = store();
 
-        if (user()->has_store) {
+        if (user()->store !== null) {
             $districts += select($this->_getDistrictsByCityId($store->city_id)->keyBy('id'));
             $wards     += select($this->_getWardsByCityId($store->district_id)->keyBy('id'));
         }
@@ -329,10 +329,11 @@ class SettingController extends FrontController
         //Only accept AJAX request
         if ($request->ajax() && $request->isMethod('POST')) {
 
-            $store = $this->store;
             $user  = user();
 
-            if ($user->has_store) {
+            if ($user->store === null) {
+                $store = $this->store;
+            } else {
                 $store = store();
             }
 
@@ -370,9 +371,6 @@ class SettingController extends FrontController
                 
                 if ($store->save()) {
 
-                    $user->has_store = true;
-                    $user->update();
-
                     $productPath = config('front.product_path') . $store->id;
                     $oldmask     = umask(0);
 
@@ -392,43 +390,9 @@ class SettingController extends FrontController
         }
     }
 
-    /**
-     * Get districts that belong to the city/province by city_id
-     *
-     * @param int $id City id
-     *
-     * @return \Illuminate\Support\Collection $collection
-     */
-    protected function _getDistrictsByCityId($id) {
-
-        $dbRaw     = DB::raw("id, CONCAT(type, ' ', name) as name");
-        $districts = District::where('city_id', $id)->select($dbRaw)
-                                                    ->orderBy('name')
-                                                    ->get();
-
-        return $districts;
-    }
-
-    /**
-     * Get districts that belong to the city/province by city_id
-     *
-     * @param int $id City id
-     *
-     * @return \Illuminate\Support\Collection $collection
-     */
-    protected function _getWardsByCityId($id) {
-
-        $dbRaw = DB::raw("id, CONCAT(type, ' ', name) as name");
-        $wards = Ward::where('district_id', $id)->select($dbRaw)
-                                                ->orderBy('name')
-                                                ->get();
-
-        return $wards;
-    }
-
     public function ajaxChangeCover(Request $request) {
 
-        if ($request->isMethod('POST') && user()->has_store) {
+        if ($request->isMethod('POST')) {
 
             $rules     = $this->_getCoverRules();
             $messages  = $this->_getCoverMessages();
@@ -508,7 +472,41 @@ class SettingController extends FrontController
             ]);
         }
     }
+    
+    /**
+     * Get districts that belong to the city/province by city_id
+     *
+     * @param int $id City id
+     *
+     * @return \Illuminate\Support\Collection $collection
+     */
+    protected function _getDistrictsByCityId($id) {
 
+        $dbRaw     = DB::raw("id, CONCAT(type, ' ', name) as name");
+        $districts = District::where('city_id', $id)->select($dbRaw)
+                                                    ->orderBy('name')
+                                                    ->get();
+
+        return $districts;
+    }
+    
+    /**
+     * Get districts that belong to the city/province by city_id
+     *
+     * @param int $id City id
+     *
+     * @return \Illuminate\Support\Collection $collection
+     */
+    protected function _getWardsByCityId($id) {
+
+        $dbRaw = DB::raw("id, CONCAT(type, ' ', name) as name");
+        $wards = Ward::where('district_id', $id)->select($dbRaw)
+                                                ->orderBy('name')
+                                                ->get();
+
+        return $wards;
+    }
+    
     /**
      * Get password validation rules
      *

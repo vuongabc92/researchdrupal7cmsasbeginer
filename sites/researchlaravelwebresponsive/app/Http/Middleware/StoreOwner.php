@@ -35,13 +35,9 @@ class StoreOwner
     public function handle($request, Closure $next)
     {
         if ($this->auth->check() && $this->auth->user()->store === null) {
-            if ($request->ajax()) {
-                return response('Unauthorized.', 401);
-            } else {
-                return redirect()->guest(route('front_home'));
-            }
+            return pong(0, 'Unauthorized.', 401);
         }
-        die(':D');
+        
         return $next($request);
     }
 }

@@ -78,6 +78,7 @@
                     <i class="fa fa-check _dn"></i>
                 </button>
             </div>
+            {!! Form::hidden('store_slug', $slug) !!}
             {!! Form::close() !!}
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->

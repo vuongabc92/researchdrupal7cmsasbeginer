@@ -36,18 +36,30 @@ if ( ! function_exists('user')) {
 if ( ! function_exists('store')) {
     /**
      * Current authenticated user's store if exist
-     *
+     * 
+     * @param string|int $key Store id or store slug
+     * @param boolean    $slug Find by slug
+     * 
      * @return \App\Models\Store|null
      */
-    function store($id = 0) {
-        if ($id) {
-            return App\Models\Store::find($id);
-        }
-
-        if ( user() !== null && user()->store !== null) {
+    function store($key = 0, $slug = false) {
+        
+        if (user() !== null && user()->store !== null) {
+            if ($slug) {
+                $store =  App\Models\Store::where('slug', $key)->get();
+                
+                return ($store->id === store()->id) ? $store : null;
+            } 
+            
+            if ($key && ! $slug) {
+                $store = App\Models\Store::find($key);
+                
+                return ($store->id === store()->id) ? $store : null;
+            }
+            
             return user()->store;
         }
-
+        
         return null;
     }
 }
