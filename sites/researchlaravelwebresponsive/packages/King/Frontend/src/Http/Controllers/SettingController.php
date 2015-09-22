@@ -357,7 +357,7 @@ class SettingController extends FrontController
                 $store->district_id  = $request->get('district_id');
                 $store->ward_id      = $request->get('ward_id');
                 $store->phone_number = $request->get('phone_number');
-                
+
                 if ($store->slug === '') {
                     $slug = str_slug($store->name);
                     if ($store->findStoreBySlug($slug) !== null) {
@@ -368,7 +368,7 @@ class SettingController extends FrontController
                 } else {
                     $store->slug = str_replace('_', '-', $request->get('slug'));
                 }
-                
+
                 if ($store->save()) {
 
                     $productPath = config('front.product_path') . $store->id;
@@ -472,7 +472,18 @@ class SettingController extends FrontController
             ]);
         }
     }
-    
+
+    public function ajaxCheckStoreSlugUnique(Request $request) {
+
+        if ($request->ajax() && $request->isMethod('POST')) {
+
+            $slug   = str_slug($request->get('slug'));
+            $stores = Store::where('id', '!=', store()->id)->where('slugs', $slug)->get();
+
+            return pong(1, ['data' => ['stores' => ['count' => $stores->count(), 'message' => _t('store_slug_existed')]]]);
+        }
+    }
+
     /**
      * Get districts that belong to the city/province by city_id
      *
@@ -489,7 +500,7 @@ class SettingController extends FrontController
 
         return $districts;
     }
-    
+
     /**
      * Get districts that belong to the city/province by city_id
      *
@@ -506,7 +517,7 @@ class SettingController extends FrontController
 
         return $wards;
     }
-    
+
     /**
      * Get password validation rules
      *

@@ -65,7 +65,7 @@
         </div>
 
         <div class="_fwfl store-body">
-            <ol class="_fwfl _ls product-tree" id="product-tree" data-pin-uri="{{ route('front_product_pin') }}" data-csrf-token="{{ csrf_token() }}">
+            <ol class="_fwfl _ls product-tree" id="product-tree" data-pin-uri="{{ route('front_product_pin') }}">
                 @set $i = 1
                 @foreach( $products as $product )
                     @set $image = $product->toImage()
@@ -98,13 +98,13 @@
                                         </button>
                                     </li>
                                 </ul>
-                                @if(!$storeOwner)
+                                @if($storeOwner)
                                 <div class="product-control">
                                     <div class="btn-group">
                                         <i class="fa fa-gear product-config-btn _r2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></i>
                                         <ul class="dropdown-menu product-control-drop">
                                             <li>
-                                                <a href="{{ route('front_product_byid', $product->id) }}" data-edit-product-form class="product-edit" data-toggle="tooltip" data-placement="left" data-original-title="{{ _t('product_edit') }}">
+                                                <a href="{{ route('front_find_product_edit', ['id' => $product->id, 'store_slug' => $store->slug, 'type' => 'edit']) }}" data-edit-product-form class="product-edit" data-toggle="tooltip" data-placement="left" data-original-title="{{ _t('product_edit') }}">
                                                     <i class="fa fa-pencil"></i>
                                                 </a>
                                             </li>
@@ -121,7 +121,7 @@
                             </div>
                             <div class="product-body">
                                 <div class="product-image">
-                                    <a href="{{ route('front_full_product_byid', [$product->id, 'fz']) }}" data-product-quick-view>
+                                    <a href="{{ route('front_find_product_edit', ['id' => $product->id, 'store_slug' => $store->slug, 'type' => config('front.quick_view_product')]) }}" data-product-quick-view>
                                         <img src="{{ ($product->image_1 !== null) ? asset($productPath . $product->image_1->medium) : '' }}" alt="{{ $product->name }}" />
                                     </a>
                                 </div>
@@ -143,11 +143,11 @@
             </ol>
         </div>
     </div>
+    <input type="hidden" id="_csrf_token" data-csrf-token="{{ csrf_token() }}"/>
 </div>
-
-@include('frontend::inc.save-product-popup', ['slug' => $store->slug])
-
-
+    @if($storeOwner)
+    @include('frontend::inc.save-product-popup', ['slug' => $store->slug])
+    @endif
 @include('frontend::inc.quick-view-product-popup')
 @stop
 

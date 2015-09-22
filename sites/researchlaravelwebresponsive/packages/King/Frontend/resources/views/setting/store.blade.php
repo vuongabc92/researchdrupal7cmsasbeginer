@@ -53,15 +53,15 @@ Setting > Store
                                 <label class="_fwfl setting-form-label" for="name" data-title="{{ _t('store_name') }}">{{ _t('store_name') }}</label>
                                 {!! Form::text('name', null, ['class' => '_fwfl setting-form-field', 'id' => 'name', 'maxlength' => '250']) !!}
                             </div>
+                            @if(user()->store !== null)
                             <div class="_fl setting-form-group setting-form-group-store">
                                 <label class="_fwfl setting-form-label" for="slug" data-title="{{ _t('store_slug') }}">{{ _t('store_slug') }}</label>
-                                {!! Form::text('slug', null, ['class' => '_fwfl setting-form-field', 'id' => 'slug', 'maxlength' => '250']) !!}
+                                {!! Form::text('slug', null, ['class' => '_fwfl setting-form-field', 'id' => 'slug', 'maxlength' => '250', 'data-check-slug-unique' => route('front_setting_store_slug_unique')]) !!}
                             </div>
+                            @endif
                             <div class="_fl setting-form-group setting-form-group-store">
                                 <label class="_fwfl setting-form-label" for="category" data-title="{{ _t('category') }}">{{ _t('category') }}</label>
-                                {!!
-                                    Form::select('category_id', $categories , null, ['id' => 'category', 'class' => 'setting-form-field selectbox-field'])
-                                !!}
+                                {!! Form::select('category_id', $categories , null, ['id' => 'category', 'class' => 'setting-form-field selectbox-field']) !!}
                                 <div class="_fwfl _mt17">
                                     <p class="_fs12 _tg7 _m0">(*) {{ _t('store_name_note1') }}</p>
                                     <p class="_fs12 _tg7 _m0 _mt3">(*) {{ _t('store_name_note2') }}</p>
@@ -125,7 +125,6 @@ Setting > Store
                             </div>
                         </div>
                     </div>
-                </form>
                 {!! Form::close() !!}
             </div>
             <div class="_fwfl setting-group last-setting-group">
@@ -133,5 +132,6 @@ Setting > Store
             </div>
         </div>
     </div>
+    <input type="hidden" id="_csrf_token" data-csrf-token="{{ csrf_token() }}"/>
 </div>
 @stop

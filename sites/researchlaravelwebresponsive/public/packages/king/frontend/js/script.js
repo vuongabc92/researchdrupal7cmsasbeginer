@@ -730,7 +730,7 @@
 
             current.on('click', 'li', function(){
                 var id = $(this).attr('data-value');
-                
+
                 url = url.replace('__ID', id);
                 window.location.replace(url);
             });
@@ -1033,20 +1033,21 @@
                             productImg     = SETTING.PRODUCT_IMG,
                             productImgEdit = SETTING.PRODUCT_IMG_EDIT,
                             productRep     = '';
+                        if (data.type === SETTING.EDIT_PRODUCT) {
+                            $.each(fields, function(k, v) {
+                                form.find('[name^=' + v + ']').val(data[v]);
+                            });
 
-                        $.each(fields, function(k, v) {
-                            form.find('[name^=' + v + ']').val(data[v]);
-                        });
-
-                        for (var i = 1; i <= 4; i++) {
-                            if (data['images']['image_' + i] !== '') {
-                                productRep = productImg.replace('__SRC', data['images']['image_' + i]);
-                                $('.product-img-' + i).css('border', 'solid 3px #000');
-                                $('.product-img-' + i).html(productRep + productImgEdit);
+                            for (var i = 1; i <= 4; i++) {
+                                if (data['images']['image_' + i] !== '') {
+                                    productRep = productImg.replace('__SRC', data['images']['image_' + i]);
+                                    $('.product-img-' + i).css('border', 'solid 3px #000');
+                                    $('.product-img-' + i).html(productRep + productImgEdit);
+                                }
                             }
-                        }
 
-                        modal.modal('show');
+                            modal.modal('show');
+                        }
                     }
                 });
             });
@@ -1120,12 +1121,13 @@
                     error: function() {},
                     success: function(response) {
                         var data  = response.data;
-
-                        that.isPinned(data.pin.viewer_has_pinned);
-                        that.displayProductInfo(data);
-                        that.initCarousel(data.images);
-                        that.showComments(response.data.comments);
-                        that.modal.modal('show');
+                        if (data.type === SETTING.QUICK_VIEW_PRODUCT) {
+                            that.isPinned(data.pin.viewer_has_pinned);
+                            that.displayProductInfo(data);
+                            that.initCarousel(data.images);
+                            that.showComments(response.data.comments);
+                            that.modal.modal('show');
+                        }
                     }
                 });
 
@@ -1686,10 +1688,10 @@
                 $.ajax({
                     type: 'POST',
                     url: current.attr('data-url'),
+                    data: {_token: SETTING.CSRF_TOKEN, before: before},
                     beforeSend: function(){
                         loading.show();
                     },
-                    data: {_token: SETTING.CSRF_TOKEN, before: before},
                     success: function(response) {
                         var comments = response.data.comments;
 
@@ -1718,6 +1720,81 @@
                     this.element.parent('li').hide();
                 }
             }
+        },
+        destroy: function() {
+            $.removeData(this.element[0], pluginName);
+        }
+    };
+
+    $.fn[pluginName] = function(options, params) {
+        return this.each(function() {
+            var instance = $.data(this, pluginName);
+            if (!instance) {
+                $.data(this, pluginName, new Plugin(this, options));
+            } else if (instance[options]) {
+                instance[options](params);
+            } else {
+                window.console && console.log(options ? options + ' method is not exists in ' + pluginName : pluginName + ' plugin has been initialized');
+            }
+        });
+    };
+
+    $.fn[pluginName].defaults = {
+        option: 'value'
+    };
+
+    $(function() {
+        $('[data-' + pluginName + ']')[pluginName]();
+    });
+
+}(jQuery, window));
+
+/**
+ *  @name Check Slug Unique
+ *  @description Check is store slug empty or not.
+ *  @version 1.0
+ *  @options
+ *    option
+ *  @events
+ *    event
+ *  @methods
+ *    init
+ *    publicMethod
+ *    destroy
+ */
+;
+(function($, window, undefined) {
+    var pluginName = 'check-slug-unique';
+
+    function Plugin(element, options) {
+        this.element = $(element);
+        this.options = $.extend({}, $.fn[pluginName].defaults, options);
+        this.init();
+    }
+
+    Plugin.prototype = {
+        init: function() {
+            var current = this.element,
+                parent  = current.parent('.setting-form-group-store'),
+                label   = parent.children('label');
+
+            current.on('keyup', function(){
+                $.ajax({
+                    type: 'POST',
+                    url: current.attr('data-check-slug-unique'),
+                    data: {_token: SETTING.CSRF_TOKEN, slug: current.val()},
+                    success: function(response) {
+                        var count = response.data.stores.count,
+                            msg   = response.data.stores.message;
+
+                        if (count > 0) {
+                            label.html('<span class="_fwfl _tr5">' + msg + '</span>');
+                        } else {
+                            label.html(label.attr('data-title'));
+                        }
+                    }
+                });
+            });
         },
         destroy: function() {
             $.removeData(this.element[0], pluginName);
