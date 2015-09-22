@@ -1033,21 +1033,20 @@
                             productImg     = SETTING.PRODUCT_IMG,
                             productImgEdit = SETTING.PRODUCT_IMG_EDIT,
                             productRep     = '';
-                        if (data.type === SETTING.EDIT_PRODUCT) {
-                            $.each(fields, function(k, v) {
-                                form.find('[name^=' + v + ']').val(data[v]);
-                            });
+                        
+                        $.each(fields, function(k, v) {
+                            form.find('[name^=' + v + ']').val(data[v]);
+                        });
 
-                            for (var i = 1; i <= 4; i++) {
-                                if (data['images']['image_' + i] !== '') {
-                                    productRep = productImg.replace('__SRC', data['images']['image_' + i]);
-                                    $('.product-img-' + i).css('border', 'solid 3px #000');
-                                    $('.product-img-' + i).html(productRep + productImgEdit);
-                                }
+                        for (var i = 1; i <= 4; i++) {
+                            if (data['images']['image_' + i] !== '') {
+                                productRep = productImg.replace('__SRC', data['images']['image_' + i]);
+                                $('.product-img-' + i).css('border', 'solid 3px #000');
+                                $('.product-img-' + i).html(productRep + productImgEdit);
                             }
-
-                            modal.modal('show');
                         }
+
+                        modal.modal('show');
                     }
                 });
             });
@@ -1121,13 +1120,11 @@
                     error: function() {},
                     success: function(response) {
                         var data  = response.data;
-                        if (data.type === SETTING.QUICK_VIEW_PRODUCT) {
-                            that.isPinned(data.pin.viewer_has_pinned);
-                            that.displayProductInfo(data);
-                            that.initCarousel(data.images);
-                            that.showComments(response.data.comments);
-                            that.modal.modal('show');
-                        }
+                        that.isPinned(data.pin.viewer_has_pinned);
+                        that.displayProductInfo(data);
+                        that.initCarousel(data.images);
+                        that.showComments(response.data.comments);
+                        that.modal.modal('show');
                     }
                 });
 
@@ -1260,13 +1257,14 @@
         init: function() {
             var current   = this.element,
                 that      = this,
-                productId = current.parents('.product').data('product-id');
+                productId = current.parents('.product').data('product-id'),
+                slug      = $('#store-container').data('store-slug');
 
             current.on('click', function(e){
                 $.ajax({
                     type: 'POST',
                     url: SETTING.PIN_URI,
-                    data:{_token: SETTING.CSRF_TOKEN, product_id: productId} ,
+                    data:{_token: SETTING.CSRF_TOKEN, product_id: productId, slug: slug} ,
                     error: function(){},
                     success: function(response){
                         var pin  = response.data.pin;

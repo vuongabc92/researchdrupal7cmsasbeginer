@@ -79,14 +79,14 @@ class StoreController extends FrontController
 
         //Only accept ajax request
         if ($request->ajax() && $request->isMethod('POST')) {
-
-            $productId = (int) $request->get('id');
-            $store     = store();
             
-            if ($store === null) {
+            if (store() === null) {
                 return pong(0, _t('not_found'), 404);
             }
-
+            
+            $store     = store();
+            $productId = (int) $request->get('id');
+            
             if ($productId) {
                 $product = $store->products->find($productId);
             } else {
@@ -169,7 +169,7 @@ class StoreController extends FrontController
     public function ajaxUploadProductImage(Request $request) {
 
         if ($request->isMethod('POST')) {
-
+            
             $order     = (int) $request->get('order');
             $rules     = $this->_getProductImageRules();
             $messages  = $this->_getProductImageMessages();
@@ -253,77 +253,42 @@ class StoreController extends FrontController
      *
      * @return type
      */
-    public function ajaxFindProductById(Request $request, $id, $store_slug, $type = '') {
+    public function ajaxFindProductById(Request $request, $id) {
 
         // Only accept AJAX with HTTP GET request
         if ($request->ajax() && $request->isMethod('GET')) {
-
-            $id         = (int) $id;
-            $quickView  = ($type === config('front.quick_view_product')) ? true : false;
-            $maxComment = config('front.max_load_comments');
-            if ($quickView) {
-                $store = Store::where('slug', $store_slug)->first();
-            } else {
-                $store = store();
-            }
-
-            if ($store === null) {
+            
+            if (store() === null) {
                 return pong(0, _t('not_found'), 404);
             }
-
-            $product = $store->products->find($id);
+            
+            $id         = (int) $id;
+            $store      = store();
+            $product    = $store->products->find($id);
+            $maxComment = config('front.max_load_comments');
+                
             if ($product === null) {
                 return pong(0, _t('not_found'), 404);
             }
 
             // Rebuild product data structure
             try {
-                $productPath = config('front.product_path') . $store->id . '/';
                 $product->toImage();
-
-                if ($quickView) {
-                    $comments = $product->comments;
-                    $data = [
-                        'id'          => $product->id,
-                        'images'      => [
-                            'image_1' => ($product->image_1 !== null) ? asset($productPath . (($quickView) ? $product->image_1->big : $product->image_1->thumb)) : '',
-                            'image_2' => ($product->image_2 !== null) ? asset($productPath . (($quickView) ? $product->image_2->big : $product->image_2->thumb)) : '',
-                            'image_3' => ($product->image_3 !== null) ? asset($productPath . (($quickView) ? $product->image_3->big : $product->image_3->thumb)) : '',
-                            'image_4' => ($product->image_4 !== null) ? asset($productPath . (($quickView) ? $product->image_4->big : $product->image_4->thumb)) : '',
-                        ],
-                        'pin'         => [
-                            'count'             => $product->total_pin,
-                            'viewer_has_pinned' => is_null($product->pin) ? false : $product->pin->isPinned()
-                        ],
-                        'comments'    => [
-                            'add_url'          => route('front_comments_add', $product->id),
-                            'delete_url'       => route('front_comments_delete', [$product->id, '__COMMENT_ID']),
-                            'more_url'         => route('front_comments_more', $product->id),
-                            'count'            => $comments->count(),
-                            'nodes'            => ($comments->count() > 0) ? $this->_rebuildComment($comments->take(-$maxComment)->all()) : [],
-                            'view_all'         => ($product->comments->count() > ($maxComment)),
-                            'load_more_before' => ($comments->count() > 0) ? $comments->take(-$maxComment)->first()->id : 0
-                        ],
-                        'last_modified' => $product->updated_at,
-                        'type'          => config('front.quick_view_product')
-                    ];
-                } else {
-                    $data = [
-                        'id'          => $product->id,
-                        'name'        => $product->name,
-                        'price'       => $product->price,
-                        'old_price'   => $product->old_price,
-                        'description' => $product->description,
-                        'images'      => [
-                            'image_1' => ($product->image_1 !== null) ? asset($productPath . (($quickView) ? $product->image_1->big : $product->image_1->thumb)) : '',
-                            'image_2' => ($product->image_2 !== null) ? asset($productPath . (($quickView) ? $product->image_2->big : $product->image_2->thumb)) : '',
-                            'image_3' => ($product->image_3 !== null) ? asset($productPath . (($quickView) ? $product->image_3->big : $product->image_3->thumb)) : '',
-                            'image_4' => ($product->image_4 !== null) ? asset($productPath . (($quickView) ? $product->image_4->big : $product->image_4->thumb)) : '',
-                        ],
-                        'last_modified' => $product->updated_at,
-                        'type'          => config('front.edit_product')
-                    ];
-                }
+                $productPath = config('front.product_path') . $store->id . '/';
+                $data = [
+                    'id'          => $product->id,
+                    'name'        => $product->name,
+                    'price'       => $product->price,
+                    'old_price'   => $product->old_price,
+                    'description' => $product->description,
+                    'images'      => [
+                        'image_1' => ($product->image_1 !== null) ? asset($productPath . $product->image_1->thumb) : '',
+                        'image_2' => ($product->image_2 !== null) ? asset($productPath . $product->image_2->thumb) : '',
+                        'image_3' => ($product->image_3 !== null) ? asset($productPath . $product->image_3->thumb) : '',
+                        'image_4' => ($product->image_4 !== null) ? asset($productPath . $product->image_4->thumb) : '',
+                    ],
+                    'last_modified' => $product->updated_at
+                ];
             } catch (Exception $ex) {
                 return pong(0, _t('opp'), 500);
             }
@@ -331,7 +296,71 @@ class StoreController extends FrontController
             return pong(1, ['data' => $data]);
         }
     }
+    
+    /**
+     * Find product by id
+     *
+     * @param Illuminate\Http\Request $request
+     * @param int                     $id
+     *
+     * @return type
+     */
+    public function ajaxGetQuickViewProduct(Request $request, $id, $store_slug) {
 
+        // Only accept AJAX with HTTP GET request
+        if ($request->ajax() && $request->isMethod('GET')) {
+            
+            $store = Store::where('slug', $store_slug)->first();
+            
+            if ($store === null) {
+                return pong(0, _t('not_found'), 404);
+            }
+            
+            $id         = (int) $id;
+            $product    = $store->products->find($id);
+            $maxComment = config('front.max_load_comments');
+            
+            if ($product === null) {
+                return pong(0, _t('not_found'), 404);
+            }
+
+            // Rebuild product data structure
+            try {
+                
+                $product->toImage();
+                
+                $productPath = config('front.product_path') . $store->id . '/';
+                $comments    = $product->comments;
+                $data        = [
+                    'id'     => $product->id,
+                    'images' => [
+                        'image_1' => ($product->image_1 !== null) ? asset($productPath . $product->image_1->big) : '',
+                        'image_2' => ($product->image_2 !== null) ? asset($productPath . $product->image_2->big) : '',
+                        'image_3' => ($product->image_3 !== null) ? asset($productPath . $product->image_3->big) : '',
+                        'image_4' => ($product->image_4 !== null) ? asset($productPath . $product->image_4->big) : '',
+                    ],
+                    'pin' => [
+                        'count'             => $product->total_pin,
+                        'viewer_has_pinned' => is_null($product->pin) ? false : $product->pin->isPinned()
+                    ],
+                    'comments' => [
+                        'add_url'          => route('front_comments_add', $product->id),
+                        'delete_url'       => route('front_comments_delete', [$product->id, '__COMMENT_ID']),
+                        'more_url'         => route('front_comments_more', $product->id),
+                        'count'            => $comments->count(),
+                        'nodes'            => ($comments->count() > 0) ? $this->_rebuildComment($comments->take(-$maxComment)->all()) : [],
+                        'view_all'         => ($product->comments->count() > ($maxComment)),
+                        'load_more_before' => ($comments->count() > 0) ? $comments->take(-$maxComment)->first()->id : 0
+                    ],
+                    'last_modified' => $product->updated_at
+                ];
+            } catch (Exception $ex) {
+                return pong(0, _t('opp'), 500);
+            }
+
+            return pong(1, ['data' => $data]);
+        }
+    }
 
     public function ajaxDeleteProduct(Request $request) {
 
@@ -352,16 +381,22 @@ class StoreController extends FrontController
 
         // Only accept ajax request with post method
         if ($request->ajax() && $request->isMethod('POST')) {
-
-            $product_id = (int) $request->get('product_id');
-            $user_id    = user()->id;
-
-            if (product($product_id) === null) {
+            
+            $slug       = $request->get('slug');
+            $store      = Store::where('slug', $slug)->first();
+            $productId  = (int) $request->get('product_id');
+            
+            if ($store === null) {
+                return pong(0, _t('not_found'), 404);
+            }
+            
+            $product = $store->products->find($productId);
+            if ($product === null) {
                 return pong(0, _t('not_found'), 404);
             }
 
             try {
-                $pin = $this->_togglePin($user_id, $product_id);
+                $pin = $this->_togglePin(user()->id, $product);
             } catch (Exception $ex) {
                 return pong(0, _t('opp'), 500);
             }
@@ -570,17 +605,16 @@ class StoreController extends FrontController
      *
      * return int pin id
      */
-    protected function _togglePin($user_id, $product_id) {
+    protected function _togglePin($userId, $product) {
 
-        $pin     = Pin::where('product_id', $product_id)->first();
-        $product = product($product_id);
+        $pin     = $product->pin;
         $pinned  = false;
 
         if ($pin === null) {
 
             $pin                = new Pin();
-            $pin->product_id    = $product_id;
-            $pin->user_id       = json_encode([$user_id => $user_id]);
+            $pin->product_id    = $product->id;
+            $pin->user_id       = json_encode([$userId => $userId]);
             $product->total_pin = ((int) $product->total_pin) + 1;
             $pinned             = true;
 
@@ -588,11 +622,11 @@ class StoreController extends FrontController
 
             $uidArray = json_decode($pin->user_id, true);
 
-            if (isset($uidArray[$user_id])) {
-                unset($uidArray[$user_id]);
+            if (isset($uidArray[$userId])) {
+                unset($uidArray[$userId]);
                 $product->total_pin = ($p = ((int) $product->total_pin) > 0) ? $p - 1 : $p;
             } else {
-                $uidArray[$user_id] = $user_id;
+                $uidArray[$userId] = $userId;
                 $product->total_pin = ((int) $product->total_pin) + 1;
                 $pinned             = true;
             }

@@ -76,8 +76,9 @@ return [
     'store_slug' => 'Slug',
     'category' => 'Category',
     'select_category' => 'Select A Category',
-    'store_name_note1' => 'Store name should be short, easy to remember and same as your store name in real world.',
-    'store_name_note2' => 'Category is your bussiness field.',
+    'store_name_note' => 'Store name should be short, easy to remember and same as your store name in real world.',
+    'store_slug_note' => 'Slug is the link to you store. It should be short, clean and easy to remember.',
+    'store_category_note' => 'Category is your bussiness field.',
     'contact_info' => 'Contact info',
     'street_name' => 'Street name',
     'province' => 'Province/City',
@@ -95,7 +96,7 @@ return [
     'store_slug_min' => 'Slug is too short (3).',
     'store_slug_max' => 'Slug is too long (250).',
     'store_slug_alpha_dash' => 'Slug is allow: number, letter and \'-\'.',
-    'store_slug_unique' => 'Slug has been used, please pick an other.',
+    'store_slug_unique' => 'Slug was existed.',
     'category_id_req' => 'Category is required.',
     'category_id_int' => 'Category is incorrect.',
     'category_id_exi' => 'Category does not exist.',
@@ -153,5 +154,4 @@ return [
     'product_price' => 'Price',
     'product_old_price' => 'Old price',
     'product_desc' => 'Description',
-    'store_slug_existed' => 'Slug was existed.'
 ];

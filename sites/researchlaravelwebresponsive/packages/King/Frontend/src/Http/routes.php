@@ -39,7 +39,7 @@ Route::group(['middleware' => 'auth'], function(){
             $route->post('save-product', ['as' => 'front_save_product', 'uses' => 'StoreController@ajaxSaveProduct']);
             $route->post('upload-product-image', ['as' => 'front_product_image', 'uses' => 'StoreController@ajaxUploadProductImage']);
             $route->get('product-del-temp-img', ['as' => 'front_product_del_temp_img', 'uses' => 'StoreController@ajaxDeleteProductTempImg']);
-            $route->get('p/{id}/{store_slug}/{type}', ['as' => 'front_find_product_edit', 'uses' => 'StoreController@ajaxFindProductById']);
+            $route->get('p/{id}', ['as' => 'front_find_product_byid', 'uses' => 'StoreController@ajaxFindProductById']);
             $route->delete('delete-product', ['as' => 'front_delete_product', 'uses' => 'StoreController@ajaxDeleteProduct']);
         //});
     });
@@ -52,6 +52,6 @@ Route::group(['middleware' => 'auth'], function(){
     });
 });
 
-Route::get('p/{id}/{store_slug}/{type}', ['as' => 'front_find_product_quickview', 'uses' => 'StoreController@ajaxFindProductById']);
+Route::get('p/{id}/{store_slug}', ['as' => 'front_product_quick_view', 'uses' => 'StoreController@ajaxGetQuickViewProduct']);
 
 Route::get('/{slug}', ['as' => 'front_astore', 'uses' => 'StoreController@store']);

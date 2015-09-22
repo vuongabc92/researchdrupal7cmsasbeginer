@@ -104,7 +104,7 @@
                                         <i class="fa fa-gear product-config-btn _r2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></i>
                                         <ul class="dropdown-menu product-control-drop">
                                             <li>
-                                                <a href="{{ route('front_find_product_edit', ['id' => $product->id, 'store_slug' => $store->slug, 'type' => 'edit']) }}" data-edit-product-form class="product-edit" data-toggle="tooltip" data-placement="left" data-original-title="{{ _t('product_edit') }}">
+                                                <a href="{{ route('front_find_product_byid', ['id' => $product->id, 'store_slug' => $store->slug, 'type' => 'edit']) }}" data-edit-product-form class="product-edit" data-toggle="tooltip" data-placement="left" data-original-title="{{ _t('product_edit') }}">
                                                     <i class="fa fa-pencil"></i>
                                                 </a>
                                             </li>
@@ -121,7 +121,7 @@
                             </div>
                             <div class="product-body">
                                 <div class="product-image">
-                                    <a href="{{ route('front_find_product_edit', ['id' => $product->id, 'store_slug' => $store->slug, 'type' => config('front.quick_view_product')]) }}" data-product-quick-view>
+                                    <a href="{{ route('front_product_quick_view', ['id' => $product->id, 'store_slug' => $store->slug]) }}" data-product-quick-view>
                                         <img src="{{ ($product->image_1 !== null) ? asset($productPath . $product->image_1->medium) : '' }}" alt="{{ $product->name }}" />
                                     </a>
                                 </div>

@@ -478,9 +478,9 @@ class SettingController extends FrontController
         if ($request->ajax() && $request->isMethod('POST')) {
 
             $slug   = str_slug($request->get('slug'));
-            $stores = Store::where('id', '!=', store()->id)->where('slugs', $slug)->get();
+            $stores = Store::where('id', '!=', store()->id)->where('slug', $slug)->get();
 
-            return pong(1, ['data' => ['stores' => ['count' => $stores->count(), 'message' => _t('store_slug_existed')]]]);
+            return pong(1, ['data' => ['stores' => ['count' => $stores->count(), 'message' => _t('store_slug_unique')]]]);
         }
     }
 

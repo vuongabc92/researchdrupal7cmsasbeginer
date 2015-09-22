@@ -63,8 +63,8 @@ Setting > Store
                                 <label class="_fwfl setting-form-label" for="category" data-title="{{ _t('category') }}">{{ _t('category') }}</label>
                                 {!! Form::select('category_id', $categories , null, ['id' => 'category', 'class' => 'setting-form-field selectbox-field']) !!}
                                 <div class="_fwfl _mt17">
-                                    <p class="_fs12 _tg7 _m0">(*) {{ _t('store_name_note1') }}</p>
-                                    <p class="_fs12 _tg7 _m0 _mt3">(*) {{ _t('store_name_note2') }}</p>
+                                    <p class="_fs12 _tg7 _m0">(*) {{ _t('store_name_note') }}</p>
+                                    <p class="_fs12 _tg7 _m0 _mt3">(*) {{ _t('store_slug_note') }}</p>
                                 </div>
                             </div>
                         </div>

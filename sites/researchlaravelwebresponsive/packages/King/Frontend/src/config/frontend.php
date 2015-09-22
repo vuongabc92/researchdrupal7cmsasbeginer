@@ -15,6 +15,4 @@ return [
     'product_img_size'    => ['big', 'medium', 'thumb'],
     'max_product_img'     => 4,
     'max_load_comments'   => 20,
-    'quick_view_product'  => 'quick-view',
-    'edit_product'        => 'edit',
 ];
