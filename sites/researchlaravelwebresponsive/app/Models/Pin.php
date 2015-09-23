@@ -13,9 +13,14 @@ class Pin extends Base
     protected $table = 'pin';
 
     public $timestamps = false;
-    
+
+    /**
+     * Check the current user in system pin the product or not
+     *
+     * @return boolean
+     */
     public function isPinned() {
-        
+
         $auth = Container::getInstance()->make('Illuminate\Contracts\Auth\Guard');
         if ($auth->guest()) {
             return false;

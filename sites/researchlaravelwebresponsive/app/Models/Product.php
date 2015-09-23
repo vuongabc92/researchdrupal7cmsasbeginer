@@ -135,4 +135,7 @@ class Product extends Base
         return $this;
     }
 
+    public function isCommented($userId) {
+        return ($this->comments->where('user_id', $userId)->count() > 0);
+    }
 }

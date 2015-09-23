@@ -154,4 +154,5 @@ return [
     'product_price' => 'Price',
     'product_old_price' => 'Old price',
     'product_desc' => 'Description',
+    'unauth' => 'Unauthorized'
 ];

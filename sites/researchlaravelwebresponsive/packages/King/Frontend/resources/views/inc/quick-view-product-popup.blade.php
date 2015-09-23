@@ -5,7 +5,7 @@
                 <div class="_fwfl -qvp-handle-container -qvp-handle-lg">
                     <ul class="_fwfl product-handle -qvp-handle">
                         <li>
-                            <button class="product-pin" data-pin-trigger>
+                            <button class="product-pin" {{ (auth()->check()) ? 'data-pin-trigger' : '' }}>
                                 <i class="fa fa-thumb-tack"></i>
                                 <b class="quick-view-product-pin">0</b>
                             </button>
@@ -33,7 +33,7 @@
                 <div class="_fwfl -qvp-handle-container -qvp-handle-sm">
                     <ul class="_fwfl product-handle -qvp-handle">
                         <li>
-                            <button class="product-pin" data-pin-trigger>
+                            <button class="product-pin" {{ (auth()->check()) ? 'data-pin-trigger' : '' }}>
                                 <i class="fa fa-thumb-tack"></i>
                                 <b class="quick-view-product-pin">0</b>
                             </button>
@@ -57,14 +57,15 @@
                     <button class="_fl btn _btn _btn-blue1 _btn-sm">Buy it</button>
                     <a href="#" class="_fr _fs13 _fwb _mt7 -qvp-details">Details...</a>
                 </div>
-                <ul class="_fwfl _ls -qvp-comments-tree product-comment-tree" data-delete-comment-url="" data-delete-comment>
-                    <li><button class="-qvp-view-more-comments" id="qvp-load-comments" data-text="View all __COUNT comments" data-text-2="Load more comments" data-url data-load-before data-load-more-comments></button> <img src="{{ asset('packages/king/frontend/images/loading-blue-white-16x16.gif') }}" class="-qvp-more-comment-loading" id="qvp-more-comment-loading"/></li>
+                <ul class="_fwfl _ls -qvp-comments-tree product-comment-tree" data-delete-comment-url="" data-delete-comment data-slug="{{ $slug }}">
+                    <li><button class="-qvp-view-more-comments" id="qvp-load-comments" data-text="View all __COUNT comments" data-text-2="Load more comments" data-url data-load-before data-load-more-comments data-slug="{{ $slug }}"></button> <img src="{{ asset('packages/king/frontend/images/loading-blue-white-16x16.gif') }}" class="-qvp-more-comment-loading" id="qvp-more-comment-loading"/></li>
                 </ul>
                 <div class="_fwfl -qvp-comment-frm-container">
                     <form class="_fwfl -qvp-comment-form" id="qvp-comment-form" action="" method="POST" data-comments-product>
                         <img src="{{ asset('packages/king/frontend/images/loading-blue-white-16x16.gif') }}" class="-qvp-comment-loading" id="qvp-comment-loading"/>
                         <input type="hidden" name="_token" value="{{ csrf_token() }}" />
-                        <input type="text" name="comment_text" class="_fwfl _r2 -qvp-comment-text" id="qvp-comment-input" placeholder="Leave a comment..." autocomplete="off"/>
+                        <input type="hidden" name="slug" value="{{ $slug }}" />
+                        <input type="text" name="comment_text" class="_fwfl _r2 -qvp-comment-text" id="qvp-comment-input" placeholder="{{ auth()->guest() ? 'Login to comment...' : 'Leave a comment...' }}" autocomplete="off" {{ auth()->guest() ? 'disabled' : '' }}/>
                     </form>
                 </div>
             </div>

@@ -1033,7 +1033,7 @@
                             productImg     = SETTING.PRODUCT_IMG,
                             productImgEdit = SETTING.PRODUCT_IMG_EDIT,
                             productRep     = '';
-                        
+
                         $.each(fields, function(k, v) {
                             form.find('[name^=' + v + ']').val(data[v]);
                         });
@@ -1141,9 +1141,11 @@
                 LoadCommentTxt = loadComment.data('text');
 
             $.each(comments.nodes, function(k, v){
-                var nodeStructure = (v.is_owner) ? SETTING.COMMENT_NODE_OWNER : SETTING.COMMENT_NODE;
+                var nodeStructure = (v.is_owner) ? SETTING.COMMENT_NODE_OWNER : SETTING.COMMENT_NODE,
+                    uname         = (v.is_one_post_product) ? '<b class="_tb">' + v.user.username + '*</b>' : v.user.username,
+                    commenterUrl  = v.user.username;
 
-                nodeStructure = nodeStructure.replace('__OWNER_HREF', v.user.username).replace('__OWNER_NAME', v.user.username).replace('__CONTENT', v.text).replace('__COMMENT_ID', v.id);
+                nodeStructure = nodeStructure.replace('__OWNER_HREF', commenterUrl).replace('__OWNER_NAME', uname).replace('__CONTENT', v.text).replace('__COMMENT_ID', v.id);
                 nodes += nodeStructure;
             });
 
@@ -1258,7 +1260,7 @@
             var current   = this.element,
                 that      = this,
                 productId = current.parents('.product').data('product-id'),
-                slug      = $('#store-container').data('store-slug');
+                slug      = current.data('slug');
 
             current.on('click', function(e){
                 $.ajax({
@@ -1510,6 +1512,7 @@
                     });
                 }
                 commentInput.val('');
+                commentInput.focus();
                 return false;
             });
 
@@ -1532,13 +1535,18 @@
             var listComment    = $('.product-comment-tree'),
                 nodeStructure  = (data.is_owner) ? SETTING.COMMENT_NODE_OWNER : SETTING.COMMENT_NODE,
                 quickComment   = $('.quick-view-product-comments'),
-                productComment = $('.product-' + data.product.id).find('.product-comment').find('b');
+                productComment = $('.product-' + data.product.id).find('.product-comment').find('b'),
+                uname         = (data.is_one_post_product) ? '<b class="_tb">' + data.user.username + '*</b>' : data.user.username,
+                commenterUrl  = data.user.username;
 
-            nodeStructure = nodeStructure.replace('__OWNER_HREF', data.user.username).replace('__OWNER_NAME', data.user.username).replace('__CONTENT', data.text).replace('__COMMENT_ID', data.id);
+            nodeStructure = nodeStructure.replace('__OWNER_HREF', commenterUrl).replace('__OWNER_NAME', uname).replace('__CONTENT', data.text).replace('__COMMENT_ID', data.id);
 
             listComment.append(nodeStructure);
             quickComment.html(data.product.count_comment);
             productComment.html(data.product.count_comment);
+            listComment.animate({
+                scrollTop: $(".product-comment-tree li:last-child").offset().top
+            });
         },
         destroy: function() {
             $.removeData(this.element[0], pluginName);
@@ -1599,6 +1607,7 @@
             current.on('click', '.close', function(){
                 var close          = $(this),
                     ul             = close.parents('ul.product-comment-tree'),
+                    storeSlug      = ul.attr('data-slug'),
                     li             = close.parents('li'),
                     commentId      = li.attr('data-comment-id'),
                     deleteUrl      = ul.attr('data-delete-comment-url'),
@@ -1611,7 +1620,7 @@
                 $.ajax({
                     type: 'DELETE',
                     url: deleteUrl,
-                    data:{_token: SETTING.CSRF_TOKEN},
+                    data:{_token: SETTING.CSRF_TOKEN, slug: storeSlug},
                     success: function(response) {
                         var data = response.data;
 
@@ -1681,12 +1690,13 @@
                 loading = $('#qvp-more-comment-loading');
 
             current.on('click', function(){
-                var before = $('.product-comment-tree li:eq(1)').attr('data-comment-id');
+                var before = $('.product-comment-tree li:eq(1)').attr('data-comment-id'),
+                    slug   = current.data('slug');
 
                 $.ajax({
                     type: 'POST',
                     url: current.attr('data-url'),
-                    data: {_token: SETTING.CSRF_TOKEN, before: before},
+                    data: {_token: SETTING.CSRF_TOKEN, before: before, slug: slug},
                     beforeSend: function(){
                         loading.show();
                     },

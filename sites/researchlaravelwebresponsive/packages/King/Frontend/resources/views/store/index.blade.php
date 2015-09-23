@@ -6,7 +6,7 @@
 
 @section('content')
 <div class="_mw970 _ma">
-    <div class="_fwfl store-container" id="store-container" data-store-slug="{{ $store->slug }}">
+    <div class="_fwfl store-container">
         <div class="_fwfl store-header">
             <div class="_fwfl store-cover">
                 <div class="_fwfl _fh store-cover-img cover-big" style="background-image:url('{{ $storeCover }}')">
@@ -80,7 +80,7 @@
                             <div class="product-head">
                                 <ul class="product-handle">
                                     <li>
-                                        <button class="product-pin {{ $pinned }}" data-pin-product>
+                                        <button class="product-pin {{ $pinned }}" {{ (auth()->check()) ? 'data-pin-product' : '' }} data-slug="{{ $store->slug }}">
                                             <i class="fa fa-thumb-tack"></i>
                                             <b>{{ $product->total_pin }}</b>
                                         </button>
@@ -92,7 +92,7 @@
                                         </button>
                                     </li>
                                     <li>
-                                        <button class="product-comment">
+                                        <button class="product-comment {{ (auth()->check() && $product->isCommented(user()->id)) ? 'commented' : '' }}">
                                             <i class="fa fa-comments-o"></i>
                                             <b>{{ $product->comments->count() }}</b>
                                         </button>
@@ -148,7 +148,7 @@
     @if($storeOwner)
     @include('frontend::inc.save-product-popup', ['slug' => $store->slug])
     @endif
-@include('frontend::inc.quick-view-product-popup')
+@include('frontend::inc.quick-view-product-popup', ['slug' => $store->slug])
 @stop
 
 @section('js')

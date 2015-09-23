@@ -79,14 +79,14 @@ class StoreController extends FrontController
 
         //Only accept ajax request
         if ($request->ajax() && $request->isMethod('POST')) {
-            
+
             if (store() === null) {
                 return pong(0, _t('not_found'), 404);
             }
-            
+
             $store     = store();
             $productId = (int) $request->get('id');
-            
+
             if ($productId) {
                 $product = $store->products->find($productId);
             } else {
@@ -169,7 +169,7 @@ class StoreController extends FrontController
     public function ajaxUploadProductImage(Request $request) {
 
         if ($request->isMethod('POST')) {
-            
+
             $order     = (int) $request->get('order');
             $rules     = $this->_getProductImageRules();
             $messages  = $this->_getProductImageMessages();
@@ -257,16 +257,16 @@ class StoreController extends FrontController
 
         // Only accept AJAX with HTTP GET request
         if ($request->ajax() && $request->isMethod('GET')) {
-            
+
             if (store() === null) {
                 return pong(0, _t('not_found'), 404);
             }
-            
+
             $id         = (int) $id;
             $store      = store();
             $product    = $store->products->find($id);
             $maxComment = config('front.max_load_comments');
-                
+
             if ($product === null) {
                 return pong(0, _t('not_found'), 404);
             }
@@ -296,7 +296,7 @@ class StoreController extends FrontController
             return pong(1, ['data' => $data]);
         }
     }
-    
+
     /**
      * Find product by id
      *
@@ -309,26 +309,26 @@ class StoreController extends FrontController
 
         // Only accept AJAX with HTTP GET request
         if ($request->ajax() && $request->isMethod('GET')) {
-            
+
             $store = Store::where('slug', $store_slug)->first();
-            
+
             if ($store === null) {
                 return pong(0, _t('not_found'), 404);
             }
-            
+
             $id         = (int) $id;
             $product    = $store->products->find($id);
             $maxComment = config('front.max_load_comments');
-            
+
             if ($product === null) {
                 return pong(0, _t('not_found'), 404);
             }
 
             // Rebuild product data structure
             try {
-                
+
                 $product->toImage();
-                
+
                 $productPath = config('front.product_path') . $store->id . '/';
                 $comments    = $product->comments;
                 $data        = [
@@ -345,10 +345,10 @@ class StoreController extends FrontController
                     ],
                     'comments' => [
                         'add_url'          => route('front_comments_add', $product->id),
-                        'delete_url'       => route('front_comments_delete', [$product->id, '__COMMENT_ID']),
-                        'more_url'         => route('front_comments_more', $product->id),
+                        'delete_url'       => route('front_comments_delete', ['product_id' => $product->id, 'store_slug' => $store->slug, 'comment_id' => '__COMMENT_ID']),
+                        'more_url'         => route('front_comments_load_more', $product->id),
                         'count'            => $comments->count(),
-                        'nodes'            => ($comments->count() > 0) ? $this->_rebuildComment($comments->take(-$maxComment)->all()) : [],
+                        'nodes'            => ($comments->count() > 0) ? $this->_rebuildComment($comments->take(-$maxComment)->all(), $store->user_id) : [],
                         'view_all'         => ($product->comments->count() > ($maxComment)),
                         'load_more_before' => ($comments->count() > 0) ? $comments->take(-$maxComment)->first()->id : 0
                     ],
@@ -381,15 +381,15 @@ class StoreController extends FrontController
 
         // Only accept ajax request with post method
         if ($request->ajax() && $request->isMethod('POST')) {
-            
+
             $slug       = $request->get('slug');
             $store      = Store::where('slug', $slug)->first();
             $productId  = (int) $request->get('product_id');
-            
+
             if ($store === null) {
                 return pong(0, _t('not_found'), 404);
             }
-            
+
             $product = $store->products->find($productId);
             if ($product === null) {
                 return pong(0, _t('not_found'), 404);
@@ -424,8 +424,15 @@ class StoreController extends FrontController
         if ($request->ajax() && $request->isMethod('POST')) {
 
             $commentText = $request->get('comment_text');
-            $product     = product($product_id);
-            if (is_null($product)) {
+            $storeSlug   = $request->get('slug');
+            $store       = Store::where('slug', $storeSlug)->first();
+
+            if ($store === null) {
+                return pong(0, _t('not_found'), 404);
+            }
+
+            $product = $store->products->find($product_id);
+            if ($product === null) {
                 return pong(0, _t('not_found'), 404);
             }
 
@@ -441,20 +448,13 @@ class StoreController extends FrontController
                 return pong(0, _t('opp'), 500);
             }
 
-            return pong(1, ['data' => [
-                'id'   => $comment->id,
-                'text' => $commentText,
-                'user' => [
-                    'id'       => user()->id,
-                    'username' => user()->user_name
-                ],
-                'product' => [
-                    'id'            => $product_id,
-                    'count_comment' => $product->comments->count(),
-                ],
-                'is_owner' => ($comment->user_id === user()->id)
+            $commentRes            = $this->_rebuildComment($comment, $store->user_id);
+            $commentRes['product'] = [
+                'id'            => $product_id,
+                'count_comment' => $product->comments->count(),
+            ];
 
-            ]]);
+            return pong(1, ['data' => $commentRes]);
         }
     }
 
@@ -467,21 +467,30 @@ class StoreController extends FrontController
      *
      * @return JSON
      */
-    public function ajaxProductDeleteComment(Request $request, $product_id, $comment_id) {
+    public function ajaxProductDeleteComment(Request $request, $product_id, $store_slug, $comment_id) {
         // Only accept ajax request with post method
         if ($request->ajax() && $request->isMethod('DELETE')) {
+
             $productId = (int) $product_id;
             $commentId = (int) $comment_id;
-            $product   = product($productId);
 
-            if (is_null($product)) {
+            $store     = Store::where('slug', $store_slug)->first();
+            if ($store === null) {
+                return pong(0, _t('not_found'), 404);
+            }
+
+            $product = $store->products->find($productId);
+            if ($product === null) {
                 return pong(0, _t('not_found'), 404);
             }
 
             $comment = $product->comments->find($commentId);
-
             if (is_null($comment)) {
                 return pong(0, _t('not_found'), 404);
+            }
+
+            if (user()->id !== $comment->user_id) {
+                return pong(0, _t('unauth'), 401);
             }
 
             try {
@@ -500,37 +509,57 @@ class StoreController extends FrontController
         }
     }
 
+    /**
+     * Load more product comments
+     *
+     * @param Illuminate\Http\Request $request
+     * @param int                     $product_id
+     *
+     * @return JSON
+     */
     public function ajaxLoadMoreComments(Request $request, $product_id) {
 
         // Only accept ajax request with post method
         if ($request->ajax() && $request->isMethod('POST')) {
 
-            $productId = (int) $product_id;
-            $product   = product($productId);
+            $store = Store::where('slug', $request->get('slug'))->first();
+            if ($store === null) {
+                return pong(0, _t('not_found'), 404);
+            }
 
+            $productId = (int) $product_id;
+            $product   = $store->products->find($productId);
             if (is_null($product)) {
                 return pong(0, _t('not_found'), 404);
             }
 
             $before = (int) $request->get('before');
-            if (is_null($product->comments->find($before))) {
+            if ($product->comments->find($before) === null) {
                 return pong(0, _t('not_found'), 404);
             }
 
             $max              = config('front.max_load_comments');
-            $comments         = $this->_loadMoreComents($productId, $before)->take($max)->get();
-            $commentsNextLoad = $this->_loadMoreComents($productId, $comments->last()->id)->take(1)->count();
+            $comments         = $this->_getLoadMoreComents($productId, $before)->take($max)->get();
+            $commentsNextLoad = $this->_getLoadMoreComents($productId, $comments->last()->id)->take(1)->count();
 
             return pong(1, ['data' => [
                 'comments' => [
-                    'nodes'                => $this->_rebuildComment($comments->sortBy('id')),
+                    'nodes'                => $this->_rebuildComment($comments->sortBy('id'), $store->user_id),
                     'older_comments_empty' => $commentsNextLoad === 0,
                 ]
             ]]);
         }
     }
 
-    protected function _loadMoreComents($productId, $before = 0) {
+    /**
+     * Get load more product comments
+     *
+     * @param int $productId
+     * @param int $before
+     *
+     * @return App\Models\Comment
+     */
+    protected function _getLoadMoreComents($productId, $before = 0) {
 
         $comment = Comment::where('product_id', $productId);
 
@@ -541,69 +570,46 @@ class StoreController extends FrontController
         return $comment->orderBy('id', 'DESC');
     }
 
-
-    protected function _getLoadCommentsNum($total, $max, $next, $loop = false) {
-
-        $check = ($total - ($next*$max));
-
-        if ($check >= $max) {
-            return ['num' => $max, 'empty' => false];
-        } else {
-
-            if($check > 0) {
-                return $loop ? $check : ['num' => $max, 'empty' => false];
-            }
-
-            if($check === 0) {
-                return $loop ? $check : ['num' => $max, 'empty' => true];
-            }
-
-            while ($check < 0) {
-
-                if (($n = $this->_getLoadCommentsNum($total, $max, $next - 1, true)) > 0) {
-                    return ['num' => $n, 'empty' => true];
-                }
-
-                return ['num' => 0, 'empty' => true];
-            }
-        }
-    }
-
     /**
      * Rebuild comment with new data
      *
-     * @param \Illuminate\Support\Collection $comments
+     * @param \Illuminate\Support\Collection $comment
+     * @param int                            $storeUserId
      *
      * @return array
      */
-    protected function _rebuildComment($comments) {
+    protected function _rebuildComment($comment, $storeUserId) {
 
-        $final = [];
-        if (count($comments)) {
-            foreach ($comments as $comment) {
-                $final[] = [
-                    'id' => $comment->id,
-                    'text' => $comment->text,
-                    'user' => [
-                        'id'       => $comment->user->id,
-                        'username' => $comment->user->user_name
-                    ],
-                    'is_owner' => is_null(user()) ? false : ($comment->user->id === user()->id)
-                ];
+        if (is_array($comment) && count($comment)) {
+            $final = [];
+
+            foreach ($comment as $one) {
+                $final[] = $this->_rebuildComment($one, $storeUserId);
             }
+
+            return $final;
         }
 
-        return $final;
+        return [
+            'id' => $comment->id,
+            'text' => $comment->text,
+            'user' => [
+                'id'       => $comment->user_id,
+                'username' => $comment->user->user_name
+            ],
+            'is_one_post_product' => ($storeUserId === $comment->user_id),
+            'is_owner' => (user() === null) ? false : ($comment->user_id === user()->id)
+        ];
     }
 
 
     /**
      * Toggle pin product
      *
-     * @param int $user_id
-     * @param int $product_id
+     * @param int                $userId
+     * @param App\Models\Product $product
      *
-     * return int pin id
+     * return array
      */
     protected function _togglePin($userId, $product) {
 

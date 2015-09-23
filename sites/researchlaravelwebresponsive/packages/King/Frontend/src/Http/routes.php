@@ -47,11 +47,12 @@ Route::group(['middleware' => 'auth'], function(){
     Route::group(['prefix' => 'product'], function($route){
         $route->post('pin', ['as' => 'front_product_pin', 'uses' => 'StoreController@ajaxPinProduct']);
         $route->post('comments/{product_id}/add', ['as' => 'front_comments_add', 'uses' => 'StoreController@ajaxProductAddComment']);
-        $route->delete('comments/{product_id}/delete/{comment_id}', ['as' => 'front_comments_delete', 'uses' => 'StoreController@ajaxProductDeleteComment']);
-        $route->post('comments/{product_id}/more', ['as' => 'front_comments_more', 'uses' => 'StoreController@ajaxLoadMoreComments']);
+        $route->delete('comments/{product_id}/{store_slug}/delete/{comment_id}', ['as' => 'front_comments_delete', 'uses' => 'StoreController@ajaxProductDeleteComment']);
+
     });
 });
 
 Route::get('p/{id}/{store_slug}', ['as' => 'front_product_quick_view', 'uses' => 'StoreController@ajaxGetQuickViewProduct']);
+Route::post('comments/{product_id}/load-more', ['as' => 'front_comments_load_more', 'uses' => 'StoreController@ajaxLoadMoreComments']);
 
 Route::get('/{slug}', ['as' => 'front_astore', 'uses' => 'StoreController@store']);
