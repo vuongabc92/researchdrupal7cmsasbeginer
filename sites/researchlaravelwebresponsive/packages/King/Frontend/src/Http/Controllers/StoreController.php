@@ -344,13 +344,14 @@ class StoreController extends FrontController
                         'viewer_has_pinned' => is_null($product->pin) ? false : $product->pin->isPinned()
                     ],
                     'comments' => [
-                        'add_url'          => route('front_comments_add', $product->id),
-                        'delete_url'       => route('front_comments_delete', ['product_id' => $product->id, 'store_slug' => $store->slug, 'comment_id' => '__COMMENT_ID']),
-                        'more_url'         => route('front_comments_load_more', $product->id),
-                        'count'            => $comments->count(),
-                        'nodes'            => ($comments->count() > 0) ? $this->_rebuildComment($comments->take(-$maxComment)->all(), $store->user_id) : [],
-                        'view_all'         => ($product->comments->count() > ($maxComment)),
-                        'load_more_before' => ($comments->count() > 0) ? $comments->take(-$maxComment)->first()->id : 0
+                        'add_url'              => route('front_comments_add', $product->id),
+                        'delete_url'           => route('front_comments_delete', ['product_id' => $product->id, 'store_slug' => $store->slug, 'comment_id' => '__COMMENT_ID']),
+                        'more_url'             => route('front_comments_load_more', $product->id),
+                        'count'                => $comments->count(),
+                        'nodes'                => ($comments->count() > 0) ? $this->_rebuildComment($comments->take(-$maxComment)->all(), $store->user_id) : [],
+                        'view_all'             => ($product->comments->count() > ($maxComment)),
+                        'load_more_before'     => ($comments->count() > 0) ? $comments->take(-$maxComment)->first()->id : 0,
+                        'viewer_has_commented' => (auth()->check() && $product->isCommented(user()->id)) ? true : false
                     ],
                     'last_modified' => $product->updated_at
                 ];
@@ -473,8 +474,8 @@ class StoreController extends FrontController
 
             $productId = (int) $product_id;
             $commentId = (int) $comment_id;
-
             $store     = Store::where('slug', $store_slug)->first();
+            
             if ($store === null) {
                 return pong(0, _t('not_found'), 404);
             }
@@ -502,8 +503,10 @@ class StoreController extends FrontController
             return pong(1, [
                 'data' => [
                     'comments' => [
-                        'count' => Product::find($productId)->comments->count()
-                    ]
+                        'count'                => Product::find($productId)->comments->count(),
+                        'viewer_has_commented' => $product->isCommented(user()->id)
+                    ],
+                    'product_id' => $product->id
                 ]
             ]);
         }
@@ -544,7 +547,7 @@ class StoreController extends FrontController
 
             return pong(1, ['data' => [
                 'comments' => [
-                    'nodes'                => $this->_rebuildComment($comments->sortBy('id'), $store->user_id),
+                    'nodes'                => $this->_rebuildComment($comments->sortBy('id')->all(), $store->user_id),
                     'older_comments_empty' => $commentsNextLoad === 0,
                 ]
             ]]);

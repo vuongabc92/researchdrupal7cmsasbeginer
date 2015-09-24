@@ -136,6 +136,7 @@ class Product extends Base
     }
 
     public function isCommented($userId) {
-        return ($this->comments->where('user_id', $userId)->count() > 0);
+
+        return (Comment::where('product_id', $this->id)->where('user_id', $userId)->count() > 0);
     }
 }

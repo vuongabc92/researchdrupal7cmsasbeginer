@@ -25,8 +25,10 @@
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                     </ul>
                 </div>
-                <div class="_fwfl product-carousel">
+                <div class="_fwfl product-carousel-container -qvp-carousel">
                     <div id="product-carousel" class="owl-carousel"></div>
+                    <b class="_fl fa fa-chevron-left -pcn -pcn-disabled -pcn-prev"></b>
+                    <b class="_fr fa fa-chevron-right -pcn -pcn-disabled -pcn-next"></b>
                 </div>
             </div>
             <div class="-qvp-modal-right">

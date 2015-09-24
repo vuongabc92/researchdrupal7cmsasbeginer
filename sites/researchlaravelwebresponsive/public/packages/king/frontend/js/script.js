@@ -1138,7 +1138,8 @@
                 loadMoreNode   = $('.product-comment-tree li:eq(0)'),
                 notFirstNode   = $('.product-comment-tree li:not(:first)'),
                 loadComment    = $('#qvp-load-comments'),
-                LoadCommentTxt = loadComment.data('text');
+                LoadCommentTxt = loadComment.data('text'),
+                commentBtn     = $('.-qvp-handle .product-comment');
 
             $.each(comments.nodes, function(k, v){
                 var nodeStructure = (v.is_owner) ? SETTING.COMMENT_NODE_OWNER : SETTING.COMMENT_NODE,
@@ -1160,6 +1161,11 @@
             } else {
                 loadMoreNode.hide();
             }
+            if (comments.viewer_has_commented) {
+                commentBtn.addClass('commented');
+            } else {
+                commentBtn.removeClass('commented');
+            }
         },
         displayProductInfo: function(info) {
             var modal        = this.modal,
@@ -1176,6 +1182,8 @@
             var carousel        = $('#product-carousel'),
                 slideHtml       = SETTING.CAROUSEL_SLIDE,
                 carouselHtml    = '',
+                nav             = $('.-qvp-carousel .-pcn'),
+                countImgs       = 0,
                 carouselSetting = {
                     singleItem: true,
                     lazyLoad: true,
@@ -1184,11 +1192,17 @@
 
             $.each(images, function(k, v) {
                 if (v !== '') {
+                    countImgs = countImgs + 1;
                     carouselHtml += slideHtml.replace('__SRC', v);
                 }
             });
 
             carousel.html(carouselHtml);
+            if (countImgs > 1) {
+                nav.removeClass('-pcn-disabled');
+            } else {
+                nav.addClass('-pcn-disabled');
+            }
 
             SETTING.PRODUCT_CAROUSEL = carousel.owlCarousel(carouselSetting);
         },
@@ -1532,10 +1546,12 @@
             }
         },
         showComment: function(data) {
-            var listComment    = $('.product-comment-tree'),
-                nodeStructure  = (data.is_owner) ? SETTING.COMMENT_NODE_OWNER : SETTING.COMMENT_NODE,
-                quickComment   = $('.quick-view-product-comments'),
-                productComment = $('.product-' + data.product.id).find('.product-comment').find('b'),
+            var listComment   = $('.product-comment-tree'),
+                nodeStructure = (data.is_owner) ? SETTING.COMMENT_NODE_OWNER : SETTING.COMMENT_NODE,
+                quickComment  = $('.quick-view-product-comments'),
+                qvpCommentBtn = $('.-qvp-handle .product-comment'),
+                commentBtn    = $('.product-' + data.product.id).find('.product-comment'),
+                commentNum    = commentBtn.find('b'),
                 uname         = (data.is_one_post_product) ? '<b class="_tb">' + data.user.username + '*</b>' : data.user.username,
                 commenterUrl  = data.user.username;
 
@@ -1543,10 +1559,12 @@
 
             listComment.append(nodeStructure);
             quickComment.html(data.product.count_comment);
-            productComment.html(data.product.count_comment);
+            commentNum.html(data.product.count_comment);
             listComment.animate({
                 scrollTop: $(".product-comment-tree li:last-child").offset().top
             });
+            commentBtn.addClass('commented');
+            qvpCommentBtn.addClass('commented');
         },
         destroy: function() {
             $.removeData(this.element[0], pluginName);
@@ -1601,8 +1619,7 @@
 
     Plugin.prototype = {
         init: function() {
-            var current     = this.element,
-                loadComment = $('#qvp-load-comments');
+            var current     = this.element;
 
             current.on('click', '.close', function(){
                 var close          = $(this),
@@ -1622,11 +1639,18 @@
                     url: deleteUrl,
                     data:{_token: SETTING.CSRF_TOKEN, slug: storeSlug},
                     success: function(response) {
-                        var data = response.data;
+                        var data          = response.data,
+                            qvpCommentBtn = $('.-qvp-handle .product-comment'),
+                            commentBtn    = $('.product-' + data.product_id).find('.product-comment');
 
                         li.remove();
                         quickComment.html(data.comments.count);
                         productComment.html(data.comments.count);
+
+                        if ( ! data.comments.viewer_has_commented) {
+                            qvpCommentBtn.removeClass('commented');
+                            commentBtn.removeClass('commented');
+                        }
                     }
                 });
             });
@@ -1716,9 +1740,11 @@
 
             if (comments.nodes.length) {
                 $.each(comments.nodes, function(k, v){
-                    var nodeHtml = (v.is_owner) ? SETTING.COMMENT_NODE_OWNER : SETTING.COMMENT_NODE;
+                    var nodeHtml     = (v.is_owner) ? SETTING.COMMENT_NODE_OWNER : SETTING.COMMENT_NODE,
+                        uname        = (v.is_one_post_product) ? '<b class="_tb">' + v.user.username + '*</b>' : v.user.username,
+                        commenterUrl = v.user.username;
 
-                    nodeHtml = nodeHtml.replace('__OWNER_HREF', v.user.username).replace('__OWNER_NAME', v.user.username).replace('__CONTENT', v.text).replace('__COMMENT_ID', v.id);
+                    nodeHtml = nodeHtml.replace('__OWNER_HREF', commenterUrl).replace('__OWNER_NAME', uname).replace('__CONTENT', v.text).replace('__COMMENT_ID', v.id);
                     nodes   += nodeHtml;
                 });
 
@@ -1835,6 +1861,8 @@
 
 $(document).ready(function(){
 
+    productCarouselNav();
+
     /**
      * Bind event close dropdown of bootstap to
      * reset location dropdown to orginal
@@ -1898,6 +1926,7 @@ $(document).ready(function(){
      */
     function resetQuicViewProductModal() {
         SETTING.PRODUCT_CAROUSEL.data('owlCarousel').destroy();
+        $('.-qvp-carousel .-pcn').addClass('-pcn-disabled');
     }
 
     /**
@@ -1920,5 +1949,15 @@ $(document).ready(function(){
                 break;
             }
         };
+    }
+
+    function productCarouselNav() {
+        // Custom Navigation Events
+        $('.-pcn-next').click(function(){
+            SETTING.PRODUCT_CAROUSEL.trigger('owl.next');
+        })
+        $('.-pcn-prev').click(function(){
+            SETTING.PRODUCT_CAROUSEL.trigger('owl.prev');
+        })
     }
 });

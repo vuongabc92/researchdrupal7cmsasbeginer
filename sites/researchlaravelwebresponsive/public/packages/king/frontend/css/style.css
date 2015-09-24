@@ -163,9 +163,13 @@ body{background-color:#f5f8fa;}
 .-qvp-comment-loading{position:absolute;display:none;width:16px;height:16px;left:50%;top:50%;margin-top:-8px;margin-left:-8px;}
 .-qvp-comments-tree .close{font-weight:normal;font-size:26px;margin:-6px 0 0 15px;height:21px;}
 .-qvp-more-comment-loading{display:none;}
-.product-carousel{max-width:570px;}
-.product-carousel img{cursor:move;width:100%;height:100%;}
-
+.product-carousel-container{max-width:570px;position:relative}
+.product-carousel-container img{cursor:move;width:100%;height:100%;}
+.-pcn{top:50%;margin-top:-19px;position:absolute;height:28px;font-size:30px;color:#fff;opacity:0.95;cursor:pointer;display:none;}
+.-pcn-disabled{display:none !important;}
+.-pcn-prev{left:0}
+.-pcn-next{right:0}
+.product-carousel-container:hover .-pcn{display:block;}
 
 
 @media screen and (min-width: 320px){

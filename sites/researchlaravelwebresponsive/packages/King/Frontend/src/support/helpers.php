@@ -386,11 +386,12 @@ if (!function_exists('get_display_name')) {
 
         if (auth()->check()) {
             $user = user();
-            if ($user->first_name !== '') {
-                return $user->first_name . ' ' . $user->last_name;
+            
+            if ($user->first_name === null) {
+                return $user->user_name;
             }
 
-            return $user->user_name;
+            return $user->first_name . ' ' . $user->last_name;
         }
 
         return '';

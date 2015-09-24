@@ -87,7 +87,7 @@
                                             </a>
                                         @else
                                             <a href="{{ route('front_setting_store') }}">
-                                                <i class="fa fa-eye"></i>
+                                                <i class="fa fa-bookmark-o"></i>
                                                 <span>{{ _t('create_store_link') }}</span>
                                             </a>
                                         @endif
