@@ -80,15 +80,15 @@
                                     </li>
                                     <li role="separator" class="divider"></li>
                                     <li>
-                                        @if(user()->has_store)
-                                            <a href="{{ route('front_astore', user()->store->slug) }}">
-                                                <i class="fa fa-eye"></i>
-                                                <span>{{ _t('view_store') }}</span>
-                                            </a>
-                                        @else
+                                        @if(user()->store === null)
                                             <a href="{{ route('front_setting_store') }}">
                                                 <i class="fa fa-bookmark-o"></i>
                                                 <span>{{ _t('create_store_link') }}</span>
+                                            </a>
+                                        @else
+                                            <a href="{{ route('front_astore', user()->store->slug) }}">
+                                                <i class="fa fa-eye"></i>
+                                                <span>{{ _t('view_store') }}</span>
                                             </a>
                                         @endif
                                     </li>

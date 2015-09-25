@@ -9,7 +9,7 @@
     <div class="_fwfl store-container">
         <div class="_fwfl store-header">
             <div class="_fwfl store-cover">
-                <div class="_fwfl _fh store-cover-img cover-big" style="background-image:url('{{ $storeCover }}')">
+                <div class="_fwfl _fh store-cover-img cover-big" style="background-image:url('{{ get_cover('big', $store->slug) }}')">
                     @if($storeOwner)
                     <button class="_fr _m10 btn _btn-sm _btn-black-opacity choose-cover-btn" data-event-trigger="#cover-file" data-event="click|click">
                         <img class="loading-in-btn-sm" src="{{ asset('packages/king/frontend/images/loading-black-opacity-24x24.gif') }}" />
@@ -104,7 +104,7 @@
                                         <i class="fa fa-gear product-config-btn _r2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></i>
                                         <ul class="dropdown-menu product-control-drop">
                                             <li>
-                                                <a href="{{ route('front_find_product_byid', ['id' => $product->id, 'store_slug' => $store->slug, 'type' => 'edit']) }}" data-edit-product-form class="product-edit" data-toggle="tooltip" data-placement="left" data-original-title="{{ _t('product_edit') }}">
+                                                <a href="{{ route('front_find_product_by_id', ['id' => $product->id, 'store_slug' => $store->slug, 'type' => 'edit']) }}" data-edit-product-form class="product-edit" data-toggle="tooltip" data-placement="left" data-original-title="{{ _t('product_edit') }}">
                                                     <i class="fa fa-pencil"></i>
                                                 </a>
                                             </li>

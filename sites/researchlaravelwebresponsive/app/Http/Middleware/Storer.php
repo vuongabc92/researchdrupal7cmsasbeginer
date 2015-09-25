@@ -5,7 +5,7 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Contracts\Auth\Guard;
 
-class StoreOwner
+class Storer
 {
     /**
      * The Guard implementation.
@@ -37,7 +37,7 @@ class StoreOwner
         if ($this->auth->check() && $this->auth->user()->store === null) {
             return pong(0, 'Unauthorized.', 401);
         }
-        
+
         return $next($request);
     }
 }

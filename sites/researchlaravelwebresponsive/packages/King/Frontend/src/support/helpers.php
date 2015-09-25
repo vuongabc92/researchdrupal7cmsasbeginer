@@ -171,17 +171,18 @@ if ( ! function_exists('get_cover')) {
      * Get cover path
      * if the cover does not exist, default cover will be retrieved
      *
-     * @param int $size Get cover with exist size
+     * @param int    $size      Get cover with exist size
+     * @param string $storeSlug
      *
      * @return string Path to cover
      */
-    function get_cover($size = false) {
+    function get_cover($size = false, $storeSlug = '') {
 
         $covers = [];
         foreach (['big', 'medium', 'small'] as $one) {
             $covers[$one] = cover_default($one);
-            if (cover_size($one) !== false) {
-                $covers[$one] = cover_size($one);
+            if (($cs = cover_size($one, $storeSlug)) !== false) {
+                $covers[$one] = $cs;
             }
         }
 
@@ -194,14 +195,16 @@ if ( ! function_exists('cover_size')) {
     /**
      * Get cover by size
      *
-     * @param int $size
+     * @param int    $size
+     * @param string $storeSlug
      *
      * @return boolean|string
      */
-    function cover_size($size = false){
+    function cover_size($size = false, $storeSlug = ''){
         if ($size) {
+            $store     = ($storeSlug === '') ? store() : App\Models\Store::where('slug', $storeSlug)->first();
             $cover     = 'cover_' . $size;
-            $coverPath = config('front.cover_path') . store()->$cover;
+            $coverPath = config('front.cover_path') . $store->$cover;
             if (check_file($coverPath)) {
                 return asset($coverPath);
             }
@@ -386,7 +389,7 @@ if (!function_exists('get_display_name')) {
 
         if (auth()->check()) {
             $user = user();
-            
+
             if ($user->first_name === null) {
                 return $user->user_name;
             }

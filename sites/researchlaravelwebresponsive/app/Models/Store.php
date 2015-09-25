@@ -13,73 +13,73 @@ class Store extends Base
      * @var string
      */
     protected $table = 'stores';
-    
+
     /**
      * Get user
-     * 
+     *
      * @return App\Models\User
      */
     public function user()
     {
         return $this->hasOne('App\Models\User');
     }
-    
+
     /**
      * Store that owns of city
-     * 
+     *
      * @return
      */
     public function city() {
         return $this->belongsTo('App\Models\City');
     }
-    
+
     /**
      * Store that owns of district
-     * 
+     *
      * @return
      */
     public function district() {
         return $this->belongsTo('App\Models\District');
     }
-    
+
     /**
      * Get ward
-     * 
+     *
      * @return App\Models\Ward
      */
     public function ward() {
         return $this->hasOne('App\Models\Ward');
     }
-    
+
     /**
      * Get products
-     * 
+     *
      * @return App\Models\Product
      */
     public function products()
     {
         return $this->hasMany('App\Models\Product');
     }
-    
+
     public function generateSlugUri() {
         if ($this->slug === '') {
             $slug = Str::camel($this->name . '-' . $this->id);
-            
+
             if( ! is_null($this->findStoreBySlug($slug))) {
                 $this->generateSlugUri($slug . $this->id + Str::random($this->_strRandNum));
             }
-            
+
             return $slug;
         }
     }
-    
+
     public function findStoreBySlug($slug) {
-        return $this->where('slug', $slug)->get();
+        return $this->where('slug', $slug)->get()->count();
     }
-    
+
     /**
      * Get store validation rules
-     * 
+     *
      * @return array
      */
     public function getRules() {
@@ -95,10 +95,10 @@ class Store extends Base
             'cover'        => 'max:250',
         ];
     }
-    
+
     /**
      * Get store validation messages
-     * 
+     *
      * @return array
      */
     public function getMessages() {

@@ -331,13 +331,17 @@ class SettingController extends FrontController
 
             $user  = user();
 
-            if ($user->store === null) {
+            if (($us = $user->store) === null) {
                 $store = $this->store;
             } else {
                 $store = store();
             }
 
             $rules = $store->getRules();
+            if ($us === null) {
+                $rules = remove_rules($rules, 'slug.required');
+            }
+
             if (str_equal($store->slug, $request->get('slug'))) {
                 $rules = remove_rules($rules, 'slug.unique:stores,slug');
             }
@@ -358,9 +362,9 @@ class SettingController extends FrontController
                 $store->ward_id      = $request->get('ward_id');
                 $store->phone_number = $request->get('phone_number');
 
-                if ($store->slug === '') {
+                if ($user->store === null) {
                     $slug = str_slug($store->name);
-                    if ($store->findStoreBySlug($slug) !== null) {
+                    if ($store->findStoreBySlug($slug)) {
                         $store->slug = $slug . '-' . $user->id;
                     } else {
                         $store->slug = $slug;

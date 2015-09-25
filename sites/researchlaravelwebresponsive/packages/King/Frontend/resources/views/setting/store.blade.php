@@ -10,15 +10,15 @@ Setting > Store
         <div class="_fl _bgw _r3 setting-left-col">
             <div class="_fwfl setting-header">
                 <h1 class="_fwfl _p0 _m0 _fs20 _tg5 _fs20">
-                    @if(user()->has_store)
-                        {{ _t('change_store_info') }}
-                    @else
+                    @if(user()->store === null)
                         {{ _t('store') }}
+                    @else
+                        {{ _t('change_store_info') }}
                     @endif
                 </h1>
             </div>
             <div class="_fwfl">
-                @if(user()->has_store)
+                @if(user()->store !== null)
                 <div class="_fwfl setting-group">
                     <div class="_fl setting-field-left">
                         <b class="_fwfl _fs13 _tg5">{{ _t('cover_img') }}</b>

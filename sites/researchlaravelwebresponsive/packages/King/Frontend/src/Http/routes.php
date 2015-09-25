@@ -30,7 +30,7 @@ Route::group(['middleware' => 'auth'], function(){
         $route->post('store/change-info', ['as' => 'front_setting_store_change', 'uses' => 'SettingController@ajaxSaveStoreInfo']);
         $route->post('store/check-slug-unique', ['as' => 'front_setting_store_slug_unique', 'uses' => 'SettingController@ajaxCheckStoreSlugUnique']);
 
-        //Route::group(['middleware' => 'store_owner'], function($route){
+        Route::group(['middleware' => 'storer'], function($route){
             //Setting store
             $route->post('store/change-cover', ['as' => 'front_setting_change_cover', 'uses' => 'SettingController@ajaxChangeCover']);
 
@@ -39,16 +39,15 @@ Route::group(['middleware' => 'auth'], function(){
             $route->post('save-product', ['as' => 'front_save_product', 'uses' => 'StoreController@ajaxSaveProduct']);
             $route->post('upload-product-image', ['as' => 'front_product_image', 'uses' => 'StoreController@ajaxUploadProductImage']);
             $route->get('product-del-temp-img', ['as' => 'front_product_del_temp_img', 'uses' => 'StoreController@ajaxDeleteProductTempImg']);
-            $route->get('p/{id}', ['as' => 'front_find_product_byid', 'uses' => 'StoreController@ajaxFindProductById']);
+            $route->get('p/{id}', ['as' => 'front_find_product_by_id', 'uses' => 'StoreController@ajaxFindProductById']);
             $route->delete('delete-product', ['as' => 'front_delete_product', 'uses' => 'StoreController@ajaxDeleteProduct']);
-        //});
-    });
-
-    Route::group(['prefix' => 'product'], function($route){
-        $route->post('pin', ['as' => 'front_product_pin', 'uses' => 'StoreController@ajaxPinProduct']);
-        $route->post('comments/{product_id}/add', ['as' => 'front_comments_add', 'uses' => 'StoreController@ajaxProductAddComment']);
-        $route->delete('comments/{product_id}/{store_slug}/delete/{comment_id}', ['as' => 'front_comments_delete', 'uses' => 'StoreController@ajaxProductDeleteComment']);
-
+        });
+        
+        Route::group(['prefix' => 'product'], function($route) {
+            $route->post('pin', ['as' => 'front_product_pin', 'uses' => 'StoreController@ajaxPinProduct']);
+            $route->post('comments/{product_id}/add', ['as' => 'front_comments_add', 'uses' => 'StoreController@ajaxProductAddComment']);
+            $route->delete('comments/{product_id}/{store_slug}/delete/{comment_id}', ['as' => 'front_comments_delete', 'uses' => 'StoreController@ajaxProductDeleteComment']);
+        });
     });
 });
 
