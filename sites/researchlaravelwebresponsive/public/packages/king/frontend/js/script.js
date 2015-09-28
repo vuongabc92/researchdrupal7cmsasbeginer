@@ -1862,7 +1862,7 @@
 $(document).ready(function(){
 
     productCarouselNav();
-
+    
     /**
      * Bind event close dropdown of bootstap to
      * reset location dropdown to orginal
@@ -1885,9 +1885,9 @@ $(document).ready(function(){
      * reset quick view product modal to original
      */
     $('#quick-view-product-modal').on('hidden.bs.modal', function (e) {
-        resetQuicViewProductModal()
+        resetQuicViewProductModal();
     });
-
+    
     /**
      * Close product modal when reset product form
      */
@@ -1958,6 +1958,6 @@ $(document).ready(function(){
         })
         $('.-pcn-prev').click(function(){
             SETTING.PRODUCT_CAROUSEL.trigger('owl.prev');
-        })
+        });
     }
 });

@@ -50,11 +50,11 @@ class HomeController extends FrontController
 
         $id = (int) $id;
         if ( ! is_null(City::find($id))) {
-
+            
             Session::put(_const('SESSION_LOCATION'), $id);
             Session::save();
-
-            return redirect(route('front_home'));
         }
+    
+        return redirect(route('front_home'));
     }
 }
