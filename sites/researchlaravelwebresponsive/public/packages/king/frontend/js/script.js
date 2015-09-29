@@ -903,7 +903,7 @@
 
                         that.loading(false, img, text, check, true);
                         current[0].reset();
-                        $('.add-product-image').css('border', '3px dashed #d5d5d5');
+                        $('.add-product-image').attr('style', '');
                         $('.add-product-image').html('<i class="fa fa-plus"></i>');
                         $('.product-image-hidden').val('');
                         $('#add-product-modal').modal('hide');
@@ -1862,7 +1862,7 @@
 $(document).ready(function(){
 
     productCarouselNav();
-    
+
     /**
      * Bind event close dropdown of bootstap to
      * reset location dropdown to orginal
@@ -1881,13 +1881,25 @@ $(document).ready(function(){
     });
 
     /**
+     * Bind event show modal of bootstrap to
+     * set the add product image height
+     */
+    $('#add-product-modal').on('show.bs.modal', function (e) {
+        setAddProductImageHeight();
+    });
+
+    $(window).resize(function() {
+        setAddProductImageHeight(true);
+    });
+
+    /**
      * Bind event close modal of bootstrap to
      * reset quick view product modal to original
      */
     $('#quick-view-product-modal').on('hidden.bs.modal', function (e) {
         resetQuicViewProductModal();
     });
-    
+
     /**
      * Close product modal when reset product form
      */
@@ -1913,7 +1925,7 @@ $(document).ready(function(){
         $('#save-product-form')[0].reset();
         $('#save-product-form').find('#product-id').val('');
         $('.product-image-hidden').val('');
-        $('.add-product-image').css('border', '3px dashed #d5d5d5');
+        $('.add-product-image').attr('style', '');
         $('.add-product-image').html('<span class="_fwfl _fh"><i class="fa fa-plus"></i></span>');
         var modalTitle = $('#addProductModalLabel');
         modalTitle.text(modalTitle.data('add-title'));
@@ -1959,5 +1971,32 @@ $(document).ready(function(){
         $('.-pcn-prev').click(function(){
             SETTING.PRODUCT_CAROUSEL.trigger('owl.prev');
         });
+    }
+
+    /**
+     * Resize for the height of add product image div
+     *
+     * @param boolean resize
+     *
+     * @returns void
+     */
+    function setAddProductImageHeight(resize) {
+        var w             = $(window),
+            modalMaxWidth = SETTING.MODAL_MAXWIDTH;
+
+        if (w.width() < modalMaxWidth) {
+            var padding       = 30,
+                modalWidth    = (w.width() < modalMaxWidth) ? w.width() : modalMaxWidth ,
+                modalWidth    = modalWidth - padding,
+                image         = $('.add-product-image'),
+                imageWidth    = (image.width()*modalWidth)/100,
+                modal         = $('#add-product-modal');
+
+            if (resize && (modal.data('bs.modal') || {}).isShown) {
+                imageWidth = image.width();
+            }
+
+            image.height(imageWidth);
+        }
     }
 });

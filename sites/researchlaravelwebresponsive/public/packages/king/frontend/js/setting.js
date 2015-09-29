@@ -11,4 +11,5 @@ SETTING = {
     COMMENT_NODE: '<li data-comment-id="__COMMENT_ID"><a class="comment-owner" href="__OWNER_HREF">__OWNER_NAME</a> <span>__CONTENT</span></li>',
     COMMENT_NODE_OWNER: '<li data-comment-id="__COMMENT_ID"><button type="button" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></button><a class="comment-owner" href="__OWNER_HREF">__OWNER_NAME</a> <span>__CONTENT</span></li>',
     STORE_SLUG: $('#store-container').data('store-slug'),
+    MODAL_MAXWIDTH: 600,
 }
