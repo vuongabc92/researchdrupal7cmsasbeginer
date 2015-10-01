@@ -25,42 +25,33 @@
                 </div>
             </div>
             <div class="_fwfl store-nav-bar">
-                <ul class="_fwfl _fh _ls store-nav-list">
+                <ul class="_fl _fh _ls store-nav-list">
                     <li>
-                        <a href="#" title="{{ _t('store_product') }}">
-                            <span class="-nav-text">{{ _t('store_product') }}</span>
-                            <span class="-nav-icon fa fa-home"></span>
-                            <span class="-nav-count _r3">{{ $productCount }}</span>
+                        <a href="{{ route('front_astore', $store->slug) }}" title="{{ _t('store_product') }}">
+                            <span>{{ _t('store_product') }}</span>
+                            <span class="store-nav-count">{{ $productCount }}</span>
                         </a>
                     </li>
                     <li>
-                        <a href="#" title="{{ _t('store_contact') }}">
-                            <span class="-nav-text">{{ _t('store_contact') }}</span>
-                            <span class="-nav-icon fa fa-comment"></span>
+                        <a href="#" title="{{ _t('store_followers') }}">
+                            <span>{{ _t('store_followers') }}</span>
+                            <span class="store-nav-count">22</span>
                         </a>
                     </li>
                     <li>
-                        <a href="#" title="{{ _t('store_rating') }}">
-                            <span class="-nav-text">{{ _t('store_rating') }}</span>
-                            <span class="-nav-icon fa fa-star"></span>
-                            <span class="-nav-count _r3">17</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#" title="{{ _t('store_follow') }}">
-                            <span class="-nav-text">{{ _t('store_follow') }}</span>
-                            <span class="-nav-icon fa fa-bug"></span>
-                            <span class="-nav-count _r3">22</span>
+                        <a href="#" title="{{ _t('store_contact') }}" class="store-nav-icon">
+                            <i class="fa fa-map-marker"></i>
                         </a>
                     </li>
                     @if($storeOwner)
                     <li data-toggle="modal" data-target="#add-product-modal">
-                        <a href="javascript:;" class="add-product-nav" id="add-product-tooltip" data-toggle="tooltip" data-placement="bottom" data-original-title="{{ _t('add_product') }}">
-                            <span class="fa fa-plus"></span>
+                        <a href="javascript:;" class="add-product-nav store-nav-icon" title="{{ _t('add_product') }}">
+                            <i class="fa fa-plus"></i>
                         </a>
                     </li>
                     @endif
                 </ul>
+                <button class="_fr btn _btn _btn-blue _btn-sm _m12">{{ _t('store_follow') }}</button>
             </div>
         </div>
 
