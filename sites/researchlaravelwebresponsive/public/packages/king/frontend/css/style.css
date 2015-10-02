@@ -54,7 +54,7 @@ body{background-color:#f5f8fa;}
 .short-profile-nav:hover{background-color:#fff !important;}
 
 /** Setting */
-.biggest-container{padding:0 15px;}
+.biggest-container{padding:0;}
 .setting-container{margin:30px 0;}
 .setting-left-col{width:70%;padding:30px 20px 20px 20px;border:solid 1px #e4e4e4;}
 .setting-header{height:55px;border-bottom:solid 2px #ddd;}
@@ -82,12 +82,15 @@ body{background-color:#f5f8fa;}
 .store-cover-img{background-position:center center;background-size:cover;}
 .store-nav-bar{height:55px;}
 .store-nav-list>li{float:left;display:inline;}
-.store-nav-list>li>a{float:left;height:55px;padding:12px 10px;display:inline-block;color:#888;text-decoration:none;border-right:solid 1px #e3e3e3;}
+.store-nav-list>li>a{float:left;height:55px;padding:12px 10px;display:inline-block;color:#888;text-decoration:none;border-right:solid 1px #e3e3e3;outline:none;}
 .store-nav-list>li>a:hover{color:#007aff;}
-.store-nav-list>li>a>i{font-size:18px;margin-top:7px;}
+.store-nav-list>li>a>i{font-size:18px;margin-top:7px;text-align:center;}
 .store-nav-list>li>a>span{width:100%;float:left;text-align:center;text-transform:uppercase;font-size:11px;}
 .store-nav-list>li>a>span.store-nav-count{font-size:17px;line-height:15px;}
-.store-nav-list>li>a.store-nav-icon{padding:12px 18px;}
+.store-nav-list>li>a.store-nav-icon{width:55px;text-align:center;}
+.store-nav-more>ul.dropdown-menu{min-width:53px;margin-left:-8px;}
+.store-nav-more>ul.dropdown-menu>li>a{color: #7a7a7a;font-size:16px;text-align:center;}
+.store-nav-more.open .dropdown-toggle{box-shadow:none;}
 
 .product-description{overflow-y:scroll;resize:vertical;}
 .add-product-image{float:left;width:47%;height:136.297px;border:dashed 3px #d5d5d5;line-height:10px;margin:0 6% 6% 0;color:#aaa;cursor:pointer;position:relative;}
@@ -187,6 +190,7 @@ body{background-color:#f5f8fa;}
     .mobile-head-location{display:none;}
     .add-product-image>span>i{width:22px;height:24px;font-size:28px;margin:-12px 0 0 -11px;}
     .add-product-image{height:105.75px;}
+    .biggest-container{padding:0 15px;}
 }
 
 @media screen and (min-width: 571px) {

@@ -38,7 +38,16 @@
                             <span class="store-nav-count">22</span>
                         </a>
                     </li>
-                    <li>
+                    <li class="btn-group store-nav-more">
+                        <a href="#" title="More..." class="dropdown-toggle store-nav-icon" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="fa fa-ellipsis-h"></i>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a href="#"><i class="fa fa-map-marker"></i></a></li>
+                            <li><a href="#"><i class="fa fa-plus"></i></a></li>
+                        </ul>
+                    </li>
+<!--                    <li>
                         <a href="#" title="{{ _t('store_contact') }}" class="store-nav-icon">
                             <i class="fa fa-map-marker"></i>
                         </a>
@@ -49,7 +58,7 @@
                             <i class="fa fa-plus"></i>
                         </a>
                     </li>
-                    @endif
+                    @endif-->
                 </ul>
                 <button class="_fr btn _btn _btn-blue _btn-sm _m12">{{ _t('store_follow') }}</button>
             </div>
