@@ -45,18 +45,19 @@ if ( ! function_exists('store')) {
     function store($key = 0, $slug = false) {
 
         if (user() !== null && user()->store !== null) {
+            
+            $store = null;
+            
             if ($slug) {
-                $store =  App\Models\Store::where('slug', $key)->get();
-
-                return ($store->id === store()->id) ? $store : null;
-            }
-
-            if ($key && ! $slug) {
+                $store =  App\Models\Store::where('slug', $key)->first();
+            } elseif ($key) {
                 $store = App\Models\Store::find($key);
-
+            }
+            
+            if ($store !== null) {
                 return ($store->id === store()->id) ? $store : null;
             }
-
+            
             return user()->store;
         }
 

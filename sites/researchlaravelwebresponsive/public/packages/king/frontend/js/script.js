@@ -903,11 +903,7 @@
 
                         that.loading(false, img, text, check, true);
                         current[0].reset();
-                        $('.add-product-image').attr('style', '');
-                        $('.add-product-image').html('<i class="fa fa-plus"></i>');
-                        $('.product-image-hidden').val('');
-                        $('#add-product-modal').modal('hide');
-
+                        that.changeImageHtml();
                         that.showFormLabels(labels, messages);
                         that.refreshProduct(data);
                     }
@@ -915,6 +911,12 @@
 
                 return false;
             });
+        },
+        changeImageHtml: function(){
+            $('.add-product-image').attr('style', '');
+            $('.add-product-image').html('<i class="fa fa-plus"></i>');
+            $('.product-image-hidden').val('');
+            $('#add-product-modal').modal('hide');
         },
         showFormLabels: function(labels, messages){
             var current = this.element;
@@ -1828,6 +1830,81 @@
                         }
                     }
                 });
+            });
+        },
+        destroy: function() {
+            $.removeData(this.element[0], pluginName);
+        }
+    };
+
+    $.fn[pluginName] = function(options, params) {
+        return this.each(function() {
+            var instance = $.data(this, pluginName);
+            if (!instance) {
+                $.data(this, pluginName, new Plugin(this, options));
+            } else if (instance[options]) {
+                instance[options](params);
+            } else {
+                window.console && console.log(options ? options + ' method is not exists in ' + pluginName : pluginName + ' plugin has been initialized');
+            }
+        });
+    };
+
+    $.fn[pluginName].defaults = {
+        option: 'value'
+    };
+
+    $(function() {
+        $('[data-' + pluginName + ']')[pluginName]();
+    });
+
+}(jQuery, window));
+
+/**
+ *  @name Auto Refresh
+ *  @description Auto refresh data of current screen with current data in DB.
+ *  @version 1.0
+ *  @options
+ *    option
+ *  @events
+ *    event
+ *  @methods
+ *    init
+ *    publicMethod
+ *    destroy
+ */
+;
+(function($, window, undefined) {
+    var pluginName = 'auto-refresh';
+
+    function Plugin(element, options) {
+        this.element = $(element);
+        this.options = $.extend({}, $.fn[pluginName].defaults, options);
+        this.init();
+    }
+
+    Plugin.prototype = {
+        init: function() {
+            var timeRefresh = 3000,
+                that        = this;
+                    
+            setInterval(function(){
+                that.refresh();
+            }, timeRefresh);
+        },
+        refresh: function(){
+            var current         = this.element,
+                productQuantity = $('#product-tree').data('quantity'),
+                slug            = current.data('slug'),
+                data            = {_token: SETTING.CSRF_TOKEN, product_quantity: productQuantity, slug: slug};
+                
+            $.ajax({
+                type: 'POST',
+                url: SETTING.REFRESH_URL,
+                data: data,
+                success: function(response) {
+                    
+                }
             });
         },
         destroy: function() {

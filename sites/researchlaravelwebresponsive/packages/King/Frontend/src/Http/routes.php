@@ -55,3 +55,4 @@ Route::get('p/{id}/{store_slug}', ['as' => 'front_product_quick_view', 'uses' =>
 Route::post('comments/{product_id}/load-more', ['as' => 'front_comments_load_more', 'uses' => 'StoreController@ajaxLoadMoreComments']);
 
 Route::get('/{slug}', ['as' => 'front_astore', 'uses' => 'StoreController@store']);
+Route::post('/refresh', ['as' => 'front_refresh', 'uses' => 'StoreController@refresh']);

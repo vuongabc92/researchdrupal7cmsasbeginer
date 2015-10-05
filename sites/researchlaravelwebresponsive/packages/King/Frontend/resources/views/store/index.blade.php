@@ -5,7 +5,7 @@
 @stop
 
 @section('content')
-<div class="_mw970 _ma">
+<div class="_mw970 _ma" data-auto-refresh data-slug="{{ $store->slug }}">
     <div class="_fwfl store-container">
         <div class="_fwfl store-header">
             <div class="_fwfl store-cover">
@@ -29,7 +29,7 @@
                     <li>
                         <a href="{{ route('front_astore', $store->slug) }}" title="{{ _t('store_product') }}">
                             <span>{{ _t('store_product') }}</span>
-                            <span class="store-nav-count">{{ $productCount }}</span>
+                            <span class="store-nav-count">{{ $store->products->count() }}</span>
                         </a>
                     </li>
                     <li>
@@ -38,7 +38,7 @@
                             <span class="store-nav-count">22</span>
                         </a>
                     </li>
-                    <li class="btn-group store-nav-more">
+<!--                    <li class="btn-group store-nav-more">
                         <a href="#" title="More..." class="dropdown-toggle store-nav-icon" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             <i class="fa fa-ellipsis-h"></i>
                         </a>
@@ -46,8 +46,8 @@
                             <li><a href="#"><i class="fa fa-map-marker"></i></a></li>
                             <li><a href="#"><i class="fa fa-plus"></i></a></li>
                         </ul>
-                    </li>
-<!--                    <li>
+                    </li>-->
+                    <li>
                         <a href="#" title="{{ _t('store_contact') }}" class="store-nav-icon">
                             <i class="fa fa-map-marker"></i>
                         </a>
@@ -58,14 +58,14 @@
                             <i class="fa fa-plus"></i>
                         </a>
                     </li>
-                    @endif-->
+                    @endif
                 </ul>
                 <button class="_fr btn _btn _btn-blue _btn-sm _m12">{{ _t('store_follow') }}</button>
             </div>
         </div>
 
         <div class="_fwfl store-body">
-            <ol class="_fwfl _ls product-tree" id="product-tree" data-pin-uri="{{ route('front_product_pin') }}">
+            <ol class="_fwfl _ls product-tree" id="product-tree" data-quantity="{{ $store->products->count() }}" data-pin-uri="{{ route('front_product_pin') }}">
                 @set $i = 1
                 @foreach( $products as $product )
                     @set $image = $product->toImage()

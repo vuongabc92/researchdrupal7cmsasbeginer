@@ -60,7 +60,7 @@ class StoreController extends FrontController
 
         return view('frontend::store.index', [
             'productCount' => $store->products->count(),
-            'products'     => $store->products,
+            'products'     => $store->products->sortBy('created_date'),
             'store'        => $store,
             'storeCover'   => config('front.cover_path') . $store->cover_big,
             'productPath'  => config('front.product_path') . $store->id . '/',
@@ -551,6 +551,26 @@ class StoreController extends FrontController
                     'older_comments_empty' => $commentsNextLoad === 0,
                 ]
             ]]);
+        }
+    }
+    
+    public function refresh(Request $request) {
+        
+        if ($request->ajax() && $request->isMethod('POST')) {
+            
+            $response        = [];
+            $productQuantity = (int) $request->get('product_quantity');
+            $slug            = $request->get('slug');
+            $store           = store($slug, true);
+            
+            if ($store === null) {
+                return pong(0, _t('not_found'), 404);
+            }
+            
+            if ($store->products->count() > $productQuantity) {
+                dd($store->ptoducts);
+            }
+            
         }
     }
 

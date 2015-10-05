@@ -10,7 +10,7 @@
         <link rel="stylesheet" href="{{ asset('packages/king/frontend/css/common.css') }}">
         <link rel="stylesheet" href="{{ asset('packages/king/frontend/css/style.css') }}">
     </head>
-    <body>
+    <body data-refresh-url="{{ route('front_refresh') }}">
         <div class="_fwfl _bgw header">
             <div class="_mw970 _ma">
                 <div class="_fwfl _mt10 header-inside">
