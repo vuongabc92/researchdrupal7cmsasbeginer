@@ -10,19 +10,32 @@
         <div class="_fwfl store-header">
             <div class="_fwfl store-cover">
                 <div class="_fwfl _fh store-cover-img cover-big" style="background-image:url('{{ get_cover('big', $store->slug) }}')">
-                    @if($storeOwner)
-                    <button class="_fr _m10 btn _btn-sm _btn-black-opacity choose-cover-btn" data-event-trigger="#cover-file" data-event="click|click">
-                        <img class="loading-in-btn-sm" src="{{ asset('packages/king/frontend/images/loading-black-opacity-24x24.gif') }}" />
-                        <!--<b>{{ _t('store_change_cover') }}</b>-->
-                        <b>{{ _t('store_change_cover') }}</b>
-                        <i class="fa fa-check _dn"></i>
-                    </button>
-                    <div class="_fwfl _dn">
-                        {!! Form::open(['route' => 'front_setting_change_cover', 'files' => true, 'method' => 'POST', 'id' => 'upload-cover-form', 'data-upload-cover']) !!}
-                        {!! Form::file('__file', ['class' => 'field-file-hidden', 'id' => 'cover-file', 'accept' => 'image/*', 'data-event-trigger' => '#upload-cover-form', 'data-event' => 'change|submit']) !!}
-                        {!! Form::close() !!}
-                    </div>
-                    @endif
+                    <ul class="_fr _ls">
+                        @if($storeOwner)
+                        <li>
+                            <button class="_fr _m10 btn _btn-sm _btn-black-opacity _r50 choose-cover-btn" data-event-trigger="#cover-file" data-event="click|click">
+                                <b class="fa fa-pencil"></b>
+                            </button>
+                        </li>
+                        <li>
+                            <button class="_fr btn _btn-sm _btn-black-opacity _r50 store-add-product-btn" data-toggle="modal" data-target="#add-product-modal">
+                                <b class="fa fa-plus"></b>
+                            </button>
+                        </li>
+                        <div class="_fwfl _dn">
+                            {!! Form::open(['route' => 'front_setting_change_cover', 'files' => true, 'method' => 'POST', 'id' => 'upload-cover-form', 'data-upload-cover']) !!}
+                            {!! Form::file('__file', ['class' => 'field-file-hidden', 'id' => 'cover-file', 'accept' => 'image/*', 'data-event-trigger' => '#upload-cover-form', 'data-event' => 'change|submit']) !!}
+                            {!! Form::close() !!}
+                        </div>
+                        @endif
+                        <li>
+                            <a class="_fr btn _btn-sm _btn-black-opacity _r50 store-nav-contact">
+                                <b class="fa fa-map-marker"></b>
+                            </a>
+                        </li>
+                    </ul>
+                    <img class="change-cover-loading" id="change-cover-loading" src="{{ asset('packages/king/frontend/images/loading-black-opacity-24x24.gif') }}" />
+                    
                 </div>
             </div>
             <div class="_fwfl store-nav-bar">
@@ -58,16 +71,16 @@
 
         <div class="_fwfl store-body">
             <ol class="_fwfl _ls product-tree" id="product-tree" data-quantity="{{ $store->products->count() }}" data-pin-uri="{{ route('front_product_pin') }}">
-                @set $i = 1
+                @set $i = 0
                 @foreach( $products as $product )
                     @set $image = $product->toImage()
-
+                    @set $i = $i + 1
                     @if( ! is_null($product->pin) && $product->pin->isPinned())
                         @set $pinned = 'pinned'
                     @else
                         @set $pinned = ''
                     @endif
-                    <li class="{{ (($i++)%3 === 0) ? 'the-3th-product' : '' }}">
+                    <li class="{{ $i }} {{ ($i%3 === 0) ? 'product-3th' : '' }} {{ ($i%2 === 0) ? 'product-2th' : '' }}">
                         <div class="product product-{{ $product->id }} {{ $product->id }}" data-product-id="{{ $product->id }}">
                             <div class="product-head">
                                 <ul class="product-handle">

@@ -26,15 +26,11 @@ Setting > Store
                     <div class="_fr setting-field-right">
                         <b class="_fr _tr7 _fs13 _dn upload-cover-messages"></b>
                     </div>
-                    <div class="_fwfl _mt10 setting-cover-box">
-                        <img class="_fwfl _r2 setting-cover-img cover-medium" src="{{ get_cover('medium') }}" />
-                        <div class="_fwfl _mt10">
-                            <button class="_fr btn _btn _btn-white choose-cover-btn" data-event-trigger="#cover-file" data-event="click|click">
-                                <img class="loading-in-btn" src="{{ asset('packages/king/frontend/images/loading-gray-white-24x24.gif') }}" />
-                                <b class="btn-text">{{ _t('choose_cover') }}</b>
-                                <i class="fa fa-check _dn"></i>
-                            </button>
-                        </div>
+                    <div class="_fwfl _mt10 setting-cover-box cover-medium" style="background-image:url('{{ get_cover('medium') }}')">
+                        <button class="_fr _m10 btn _btn-sm _btn-black-opacity _r50 choose-cover-btn" data-event-trigger="#cover-file" data-event="click|click">
+                            <b class="fa fa-pencil"></b>
+                        </button>
+                        <img class="change-cover-loading" id="change-cover-loading" src="{{ asset('packages/king/frontend/images/loading-gray-white-24x24.gif') }}" />
                     </div>
                     <div class="_fwfl _dn">
                         {!! Form::open(['route' => 'front_setting_change_cover', 'files' => true, 'method' => 'POST', 'id' => 'upload-cover-form', 'data-upload-cover']) !!}

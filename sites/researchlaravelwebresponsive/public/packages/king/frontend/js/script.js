@@ -541,19 +541,15 @@
 
     Plugin.prototype = {
         init: function() {
-            var current      = this.element,
-                chooseCover  = $('.choose-cover-btn'),
-                coverMedium  = $('.cover-medium'),
-                coverBig     = $('.cover-big'),
-                img          = chooseCover.children('img'),
-                text         = chooseCover.children('b'),
-                check        = chooseCover.children('i');
+            var current     = this.element,
+                coverMedium = $('.cover-medium'),
+                coverBig    = $('.cover-big'),
+                img         = $('.change-cover-loading');
 
             current.on('submit', function(){
                 return AIM.submit(this, {
                     onStart: function() {
                         img.show();
-                        text.hide();
                         coverMedium.css({opacity: 0.5});
                         coverBig.css({opacity: 0.5});
                     },
@@ -563,18 +559,11 @@
                             messages = json.messages;
 
                         img.hide();
-                        text.show();
 
                         if (status === SETTING.AJAX_OK) {
-
                             $('.upload-cover-messages').hide();
-                            check.show(200);
-                            setTimeout(function() {
-                                check.hide(200);
-                            }, 2000);
-
-                            coverMedium.attr('src', json.data['medium']);
                             coverBig.css('background-image', 'url(' + json.data['big'] + ')');
+                            coverMedium.css('background-image', 'url(' + json.data['medium'] + ')');
                         }
 
                         if (status === SETTING.AJAX_ERROR) {
