@@ -13,6 +13,7 @@
                     @if($storeOwner)
                     <button class="_fr _m10 btn _btn-sm _btn-black-opacity choose-cover-btn" data-event-trigger="#cover-file" data-event="click|click">
                         <img class="loading-in-btn-sm" src="{{ asset('packages/king/frontend/images/loading-black-opacity-24x24.gif') }}" />
+                        <!--<b>{{ _t('store_change_cover') }}</b>-->
                         <b>{{ _t('store_change_cover') }}</b>
                         <i class="fa fa-check _dn"></i>
                     </button>
@@ -38,15 +39,6 @@
                             <span class="store-nav-count">22</span>
                         </a>
                     </li>
-<!--                    <li class="btn-group store-nav-more">
-                        <a href="#" title="More..." class="dropdown-toggle store-nav-icon" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <i class="fa fa-ellipsis-h"></i>
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li><a href="#"><i class="fa fa-map-marker"></i></a></li>
-                            <li><a href="#"><i class="fa fa-plus"></i></a></li>
-                        </ul>
-                    </li>-->
                     <li>
                         <a href="#" title="{{ _t('store_contact') }}" class="store-nav-icon">
                             <i class="fa fa-map-marker"></i>
@@ -60,7 +52,7 @@
                     </li>
                     @endif
                 </ul>
-                <button class="_fr btn _btn _btn-blue _btn-sm _m12">{{ _t('store_follow') }}</button>
+                <button class="_fr btn _btn _btn-blue _btn-sm _m12"><i class="fa fa-thumbs-o-up"></i> {{ _t('store_follow') }}</button>
             </div>
         </div>
 

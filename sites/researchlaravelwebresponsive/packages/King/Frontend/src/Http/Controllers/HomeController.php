@@ -9,8 +9,11 @@
 namespace King\Frontend\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\City;
 use Session;
+use App\Models\City;
+use App\Models\Store;
+use App\Models\Product;
+use App\Models\User;
 
 class HomeController extends FrontController
 {
@@ -50,11 +53,32 @@ class HomeController extends FrontController
 
         $id = (int) $id;
         if ( ! is_null(City::find($id))) {
-            
+
             Session::put(_const('SESSION_LOCATION'), $id);
             Session::save();
         }
-    
+
         return redirect(route('front_home'));
+    }
+
+
+    public function ajaxSearch(Request $request, $keyword) {
+
+        if ($request->ajax() && $request->isMethod('GET') && trim($keyword) !== '') {
+
+            $stores   = Store::where('name', 'LIKE', "%{$keyword}%")->take(10)->get(['slug', 'name']);
+            $products = Product::where('name', 'LIKE', "%{$keyword}%")->take(10)->get(['id', 'name']);
+            $users    = User::where('first_name', 'LIKE', "%{$keyword}%")
+                                ->orWhere('last_name', 'LIKE', "%{$keyword}%")
+                                ->orWhere('user_name', 'LIKE', "%{$keyword}%")
+                                ->take(10)->get(['user_name', 'first_name', 'last_name']);
+
+            return pong(1, ['data' => [
+                'stores' => $stores,
+                'products' => $products,
+                'users' => $users,
+            ]]);
+        }
+
     }
 }
