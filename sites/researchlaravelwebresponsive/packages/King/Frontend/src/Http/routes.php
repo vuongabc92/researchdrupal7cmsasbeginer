@@ -42,7 +42,7 @@ Route::group(['middleware' => 'auth'], function(){
             $route->get('p/{id}', ['as' => 'front_find_product_by_id', 'uses' => 'StoreController@ajaxFindProductById']);
             $route->delete('delete-product', ['as' => 'front_delete_product', 'uses' => 'StoreController@ajaxDeleteProduct']);
         });
-        
+
         Route::group(['prefix' => 'product'], function($route) {
             $route->post('pin', ['as' => 'front_product_pin', 'uses' => 'StoreController@ajaxPinProduct']);
             $route->post('comments/{product_id}/add', ['as' => 'front_comments_add', 'uses' => 'StoreController@ajaxProductAddComment']);
@@ -53,5 +53,7 @@ Route::group(['middleware' => 'auth'], function(){
 
 Route::get('p/{id}/{store_slug}', ['as' => 'front_product_quick_view', 'uses' => 'StoreController@ajaxGetQuickViewProduct']);
 Route::post('comments/{product_id}/load-more', ['as' => 'front_comments_load_more', 'uses' => 'StoreController@ajaxLoadMoreComments']);
+Route::get('/search', ['as' => 'front_search_empty', 'uses' => 'HomeController@ajaxSearch']);
+Route::get('/search/{keyword}', ['as' => 'front_search', 'uses' => 'HomeController@ajaxSearch']);
 
 Route::get('/{slug}', ['as' => 'front_astore', 'uses' => 'StoreController@store']);

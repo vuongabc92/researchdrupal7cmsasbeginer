@@ -20,9 +20,9 @@
                     <div class="_fr head-right-col">
                         <div class="_fl head-search-location">
                             <div class="_fwfl head-search-inside">
-                                <form class="_fl _fwb _fs13 header-search-form">
-                                    <input type="text" class="_fwfl _fh _ff0 _r2 header-search-input" placeholder="{{ _t('head-search-placeholder') }}">
-                                    <button type="submit" class="_ff0 _fl _fh _fs17 _tb header-search-btn"><i class="fa fa-search"></i></button>
+                                <form class="_fl _fwb _fs13 header-search-form" onsubmit="return false" action="{{ route('front_search_empty') }}">
+                                    <input type="text" class="_fwfl _fh _ff0 _r2 header-search-input" placeholder="{{ _t('head-search-placeholder') }}" data-search name="keyword">
+                                    <button type="button" class="_ff0 _fl _fh _fs17 _tb header-search-btn"><i class="fa fa-search"></i></button>
                                 </form>
 
                                 <div class="btn-group location-btn-group location-dropdown">
