@@ -245,6 +245,37 @@ class StoreController extends FrontController
         }
     }
 
+    public function ajaxDeleteOneProductImg(Request $request) {
+        //Only accept ajax request
+        if ($request->ajax() && $request->isMethod('POST')) {
+
+            if (store() === null) {
+                return pong(0, _t('not_found'), 404);
+            }
+
+            $store     = store();
+            $productId = (int) $request->get('product_id');
+            $image     = $request->get('img_name');
+            $product   = $store->products->find($productId);
+            
+            if ($product === null) {
+                return pong(0, _t('not_found'), 404);
+            }
+
+
+
+            try {
+
+
+
+            } catch (Exception $ex) {
+                return pong(0, _t('opp'), 500);
+            }
+
+            return pong(1, _t('saved_info'));
+        }
+    }
+
     /**
      * Find product by id
      *
@@ -475,7 +506,7 @@ class StoreController extends FrontController
             $productId = (int) $product_id;
             $commentId = (int) $comment_id;
             $store     = Store::where('slug', $store_slug)->first();
-            
+
             if ($store === null) {
                 return pong(0, _t('not_found'), 404);
             }
@@ -553,24 +584,24 @@ class StoreController extends FrontController
             ]]);
         }
     }
-    
+
     public function refresh(Request $request) {
-        
+
         if ($request->ajax() && $request->isMethod('POST')) {
-            
+
             $response        = [];
             $productQuantity = (int) $request->get('product_quantity');
             $slug            = $request->get('slug');
             $store           = store($slug, true);
-            
+
             if ($store === null) {
                 return pong(0, _t('not_found'), 404);
             }
-            
+
             if ($store->products->count() > $productQuantity) {
                 dd($store->ptoducts);
             }
-            
+
         }
     }
 

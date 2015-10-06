@@ -38,7 +38,8 @@ Route::group(['middleware' => 'auth'], function(){
             //$route->get('my-store', ['as' => 'front_my_store', 'uses' => 'StoreController@index']);
             $route->post('save-product', ['as' => 'front_save_product', 'uses' => 'StoreController@ajaxSaveProduct']);
             $route->post('upload-product-image', ['as' => 'front_product_image', 'uses' => 'StoreController@ajaxUploadProductImage']);
-            $route->get('product-del-temp-img', ['as' => 'front_product_del_temp_img', 'uses' => 'StoreController@ajaxDeleteProductTempImg']);
+            $route->get('product-delete-temp-images', ['as' => 'front_product_delete_temp_images', 'uses' => 'StoreController@ajaxDeleteProductTempImg']);
+            $route->post('product-delete-temp-image', ['as' => 'front_product_delete_temp_image', 'uses' => 'StoreController@ajaxDeleteOneProductImg']);
             $route->get('p/{id}', ['as' => 'front_find_product_by_id', 'uses' => 'StoreController@ajaxFindProductById']);
             $route->delete('delete-product', ['as' => 'front_delete_product', 'uses' => 'StoreController@ajaxDeleteProduct']);
         });

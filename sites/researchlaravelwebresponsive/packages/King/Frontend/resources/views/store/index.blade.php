@@ -13,12 +13,12 @@
                     <ul class="_fr _ls">
                         @if($storeOwner)
                         <li>
-                            <button class="_fr _m10 btn _btn-sm _btn-black-opacity _r50 choose-cover-btn" data-event-trigger="#cover-file" data-event="click|click">
+                            <button class="_fr _m10 _btn-black-opacity _r50 choose-cover-btn" data-event-trigger="#cover-file" data-event="click|click">
                                 <b class="fa fa-pencil"></b>
                             </button>
                         </li>
                         <li>
-                            <button class="_fr btn _btn-sm _btn-black-opacity _r50 store-add-product-btn" data-toggle="modal" data-target="#add-product-modal">
+                            <button class="_fr _btn-black-opacity _r50 store-add-product-btn" data-toggle="modal" data-target="#add-product-modal">
                                 <b class="fa fa-plus"></b>
                             </button>
                         </li>
@@ -29,13 +29,12 @@
                         </div>
                         @endif
                         <li>
-                            <a class="_fr btn _btn-sm _btn-black-opacity _r50 store-nav-contact">
-                                <b class="fa fa-map-marker"></b>
-                            </a>
+                            <button class="_fr _btn-black-opacity _r50 store-nav-contact">
+                                <b class="fa fa-map-marker _fs15"></b>
+                            </button>
                         </li>
                     </ul>
                     <img class="change-cover-loading" id="change-cover-loading" src="{{ asset('packages/king/frontend/images/loading-black-opacity-24x24.gif') }}" />
-                    
                 </div>
             </div>
             <div class="_fwfl store-nav-bar">
@@ -80,7 +79,8 @@
                     @else
                         @set $pinned = ''
                     @endif
-                    <li class="{{ $i }} {{ ($i%3 === 0) ? 'product-3th' : '' }} {{ ($i%2 === 0) ? 'product-2th' : '' }}">
+
+                    <li>
                         <div class="product product-{{ $product->id }} {{ $product->id }}" data-product-id="{{ $product->id }}">
                             <div class="product-head">
                                 <ul class="product-handle">

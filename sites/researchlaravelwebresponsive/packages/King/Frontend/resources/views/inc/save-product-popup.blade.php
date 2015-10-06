@@ -20,25 +20,25 @@
                         {!! Form::hidden('product_image_2', '', ['class' => 'product-image-hidden', 'id' => 'product-image-2', 'autocomplete' => 'off']) !!}
                         {!! Form::hidden('product_image_3', '', ['class' => 'product-image-hidden', 'id' => 'product-image-3', 'autocomplete' => 'off']) !!}
                         {!! Form::hidden('product_image_4', '', ['class' => 'product-image-hidden', 'id' => 'product-image-4', 'autocomplete' => 'off']) !!}
-                        {!! Form::hidden('reset_product_image', route('front_product_del_temp_img'), ['id' => 'reset-product-image']) !!}
+                        {!! Form::hidden('reset_product_image', route('front_product_delete_temp_images'), ['id' => 'reset-product-image']) !!}
                     </div>
-                    <div class="_fwfl">
-                        <div class="_r3 add-product-image product-img-1" data-event-trigger="#product-image1-file" data-event="click|click">
+                    <div class="_fwfl add-product-image-container" data-remove-url="{{ route('front_product_delete_temp_image') }}">
+                        <div class="_r3 add-product-image product-img-1" data-event-trigger="#product-image1-file" data-event="click|click" data-api-remove="1">
                             <span class="_fwfl _fh">
                                 <i class="fa fa-plus"></i>
                             </span>
                         </div>
-                        <div class="_r3 add-product-image product-img-2" data-event-trigger="#product-image2-file" data-event="click|click">
+                        <div class="_r3 add-product-image product-img-2" data-event-trigger="#product-image2-file" data-event="click|click" data-api-remove="2">
                             <span class="_fwfl _fh">
                                 <i class="fa fa-plus"></i>
                             </span>
                         </div>
-                        <div class="_r3 add-product-image product-img-3" data-event-trigger="#product-image3-file" data-event="click|click">
+                        <div class="_r3 add-product-image product-img-3" data-event-trigger="#product-image3-file" data-event="click|click" data-api-remove="3">
                             <span class="_fwfl _fh">
                                 <i class="fa fa-plus"></i>
                             </span>
                         </div>
-                        <div class="_r3 add-product-image product-img-4 -api-last" data-event-trigger="#product-image4-file" data-event="click|click">
+                        <div class="_r3 add-product-image product-img-4 -api-last" data-event-trigger="#product-image4-file" data-event="click|click" data-api-remove="4">
                             <span class="_fwfl _fh">
                                 <i class="fa fa-plus"></i>
                             </span>

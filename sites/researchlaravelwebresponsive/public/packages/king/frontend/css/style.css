@@ -90,13 +90,10 @@ body{background-color:#f5f8fa;}
 .store-nav-list>li>a.store-nav-icon{width:55px;text-align:center;}
 .store-nav-list>li:nth-child(3) {display:none;}
 .store-nav-list>li:nth-child(4) {display:none;}
-.choose-cover-btn, .store-nav-contact, .store-add-product-btn{width:31px;height:31px;}
+.choose-cover-btn, .store-nav-contact, .store-add-product-btn{width:31px;height:31px;text-align:center;clear:both;}
 .store-nav-contact{margin:10px 10px 0 0;}
 .store-add-product-btn{margin-right:10px;}
 .store-add-product-btn>i{margin-right:10px;}
-.choose-cover-btn>b.fa-pencil{margin-left:-2px;}
-.store-nav-contact>b.fa-map-marker{margin-left:-1px;}
-.store-add-product-btn>b.fa-plus{margin:3px 0 0 -2px;}
 .change-cover-loading{position:absolute;top:50%;left:50%;margin-top:-12px;margin-left:-12px;display:none;}
 
 .product-description{overflow-y:scroll;resize:vertical;}
@@ -104,21 +101,19 @@ body{background-color:#f5f8fa;}
 .add-product-image>span{position:relative;}
 .add-product-image>span>i{width:20px;height:22px;font-size:24px;position:absolute;left:50%;top:50%;margin: -11px 0 0 -10px;}
 .add-product-image:hover{border-color:#007aff;color:#007aff;}
-.add-product-image:hover .edit-product-img{display:block;}
 .product-img-2{margin-right:0;}
-.edit-product-img{display:none;width:100%;height:100%;float:left;position:absolute;background-color:rgba(0, 0, 0, 0.5);}
-.edit-product-img>span{position:relative;}
-.edit-product-img>span>i.fa-pencil{position:absolute;width:24px;height:24px;font-size:25px;color:#fff;left:50%;top:50%;margin:-12px 0 0 -12px;}
+.remove-product-img{width:20px;height:20px;padding:2px;margin:2px;right:0;position:absolute;background-color:rgba(0, 0, 0 , 0.5);font-size:15px;color:#fff;text-align:center;}
 .-ap-modal .modal-dialog{max-width:600px;width:auto;margin:auto;}
 .-ap-modal .modal-content{margin-bottom:0;border:0;box-shadow:none;-webkit-box-shadow:none;-moz-box-shadow:none;}
 .-api-last{margin-right:0 !important;}
+
 /* Product tree */
 .store-body{margin-top:20px;}
-.product-tree{padding:0 15px;}
-.product-tree>li{width:48.4375%;float:left;margin:0 3.125% 3.125% 0;}
-.product-tree>li.product-3th{margin-right:3.125%;}
-.product-tree>li.product-2th{margin-right:0;}
-.product{width:100%;float:left;height:auto;background-color:#fff;border:solid 1px #e5e5e5;border-radius:3px;-webkit-border-radius:3px;-moz-border-radius:3px;-ms-border-radius:3px;-o-border-radius:3px;}
+.product-tree{padding:0 15px;margin:auto;}
+.product-tree>li{width:100%;max-width:310px;float:none;margin:auto;}
+.product-tree>li:nth-child(3n+3){margin-right:auto;}
+.product-tree>li:nth-child(2n+2){margin-right:auto;}
+.product{width:100%;float:left;height:auto;background-color:#fff;border:solid 1px #e5e5e5;margin-bottom:15px;border-radius:3px;-webkit-border-radius:3px;-moz-border-radius:3px;-ms-border-radius:3px;-o-border-radius:3px;}
 .product>.product-head{width:100%;float:left;height:45px;padding:0 10px;border-bottom:solid 1px #8ec4ff;}
 .product-handle{float:left;list-style:none;padding:0;margin-top:14px;}
 .product-handle>li{float:left;display:inline;}
@@ -185,15 +180,17 @@ body{background-color:#f5f8fa;}
 .product-carousel-container:hover .-pcn{display:block;}
 
 
+@media screen and (min-width: 320px){
+
+}
 @media screen and (min-width: 321px){
     .header-search-form{width:90%;}
     .mobile-head-location{display:block;}
+    .store-nav-list>li>a{padding:12px 15px;}
     .add-product-image{height:101.75px;width:23.5%;margin:0 2% 2% 0;}
     .product-img-2{margin-right:2%;}
-    .store-nav-list>li>a{padding:12px 15px;}
 }
-
-@media screen and (min-width: 481px){
+@media screen and (min-width: 480px){
     .header-search-form{width:72%;}
     .head-location-btn>i.glyphicon{display:none;}
     .head-location-btn{display:block;}
@@ -204,9 +201,13 @@ body{background-color:#f5f8fa;}
     .store-nav-list>li:nth-child(4) {display:inline;}
     .store-nav-contact{display:none;}
     .store-add-product-btn{display:none;}
+    .product-tree>li{width:48.4375%;float:left;margin:0 3.125% 3.125% 0;}
+    .product-tree>li:nth-child(3n+3){margin-right:3.125%;}
+    .product-tree>li:nth-child(2n+2){margin-right:0;}
+    .product{margin-bottom:0;}
 }
 
-@media screen and (min-width: 571px) {
+@media screen and (min-width: 570px) {
     .-qvp-modal .modal-dialog{margin:30px auto;}
     .-qvp-modal .modal-content{margin-bottom:30px;border:1px solid #999;border:1px solid rgba(0, 0, 0, .2);-webkit-box-shadow: 0 3px 9px rgba(0, 0, 0, .5);box-shadow:0 3px 9px rgba(0, 0, 0, .5);}
     .-qvp-modal .modal-lg{width:100%;max-width:570px;}
@@ -216,7 +217,7 @@ body{background-color:#f5f8fa;}
     .product-tree{padding:0;}
 }
 
-@media screen and (min-width: 641px){
+@media screen and (min-width: 640px){
     .header-search-form{width:77%;}
     .head-location-btn>i.glyphicon{display:inline-block;}
     .-ap-modal .modal-dialog{width:100%;margin:30px auto;}
@@ -226,11 +227,11 @@ body{background-color:#f5f8fa;}
 
 @media screen and (min-width: 670px){
     .product-tree>li{width:31.958762887%;float:left;margin:0 2.06185567% 2.06185567% 0;}
-    .product-tree>li.product-3th{margin-right:0;}
-    .product-tree>li.product-2th{margin-right:2.06185567%;}
+    .product-tree>li:nth-child(3n+3){margin-right:0;}
+    .product-tree>li:nth-child(2n+2){margin-right:2.06185567%;}
 }
 
-@media screen and (min-width: 769px){
+@media screen and (min-width: 768px){
     .head-left-col{width:15%;}
     .head-right-col{width:85%;}
     .head-logo-nav{width:90%;}
@@ -246,14 +247,14 @@ body{background-color:#f5f8fa;}
     .store-header{height:396px;}
 }
 
-@media screen and (min-width: 841px){
+@media screen and (min-width: 840px){
     .header-search-form{width:70%;}
     .head-logo-nav{width:80%;}
     .header-search-input{padding:0 31px 0 17px;}
     .head-location-btn{padding-left:12px;padding-right:12px;}
 }
 
-@media screen and (min-width: 941px){
+@media screen and (min-width: 940px){
     .head-left-col{width:20%;}
     .head-right-col{width:80%;}
 
@@ -266,8 +267,8 @@ body{background-color:#f5f8fa;}
     .-qvp-modal .modal-dialog{margin:50px auto;}
 }
 
-@media screen and (min-width: 1025px){
+@media screen and (min-width: 1024px){
 }
 
-@media screen and (min-width: 1281px){
+@media screen and (min-width: 1280px){
 }

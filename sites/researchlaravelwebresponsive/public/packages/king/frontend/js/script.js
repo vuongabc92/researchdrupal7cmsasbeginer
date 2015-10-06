@@ -1864,6 +1864,90 @@
  */
 ;
 (function($, window, undefined) {
+    var pluginName = 'api-remove';
+
+    function Plugin(element, options) {
+        this.element = $(element);
+        this.options = $.extend({}, $.fn[pluginName].defaults, options);
+        this.init();
+    }
+
+    Plugin.prototype = {
+        init: function() {
+            var current = this.element,
+                that    = this;
+
+            current.on('click', '.remove-product-img', function(e){
+                var btn         = $(this),
+                    url         = current.parents('.add-product-image-container').data('remove-url'),
+                    productId   = $('#save-product-form').find('#product-id').val(),
+                    number      = current.attr('data-api-remove'),
+                    imgFullPath = btn.parent('.add-product-image').children('img').attr('src'),
+                    imgPathArr  = imgFullPath.split('/'),
+                    imgName     = imgPathArr[imgPathArr.length - 1];
+
+                    $.ajax({
+                        type: 'POST',
+                        url: url,
+                        data: {_token: SETTING.CSRF_TOKEN, number: number, img_name: imgName, product_id: productId},
+                        success: function(response) {
+
+                        }
+                    });
+
+                    that.removeHtml(number);
+
+                return false;
+            });
+        },
+        removeHtml: function(number){
+            $('.product-image-' + number).val('');
+            $('.product-img-' + number).attr('style', '');
+            $('.product-img-' + number).html(SETTING.PRODUCT_IMG_ADD);
+        },
+        destroy: function() {
+            $.removeData(this.element[0], pluginName);
+        }
+    };
+
+    $.fn[pluginName] = function(options, params) {
+        return this.each(function() {
+            var instance = $.data(this, pluginName);
+            if (!instance) {
+                $.data(this, pluginName, new Plugin(this, options));
+            } else if (instance[options]) {
+                instance[options](params);
+            } else {
+                window.console && console.log(options ? options + ' method is not exists in ' + pluginName : pluginName + ' plugin has been initialized');
+            }
+        });
+    };
+
+    $.fn[pluginName].defaults = {
+        option: 'value'
+    };
+
+    $(function() {
+        $('[data-' + pluginName + ']')[pluginName]();
+    });
+
+}(jQuery, window));
+
+/**
+ *  @name Auto Refresh
+ *  @description Auto refresh data of current screen with current data in DB.
+ *  @version 1.0
+ *  @options
+ *    option
+ *  @events
+ *    event
+ *  @methods
+ *    init
+ *    publicMethod
+ *    destroy
+ */
+;
+(function($, window, undefined) {
     var pluginName = 'auto-refresh';
 
     function Plugin(element, options) {
@@ -1876,23 +1960,23 @@
         init: function() {
             var timeRefresh = 3000,
                 that        = this;
-                    
-            setInterval(function(){
-                that.refresh();
-            }, timeRefresh);
+
+//            setInterval(function(){
+//                that.refresh();
+//            }, timeRefresh);
         },
         refresh: function(){
             var current         = this.element,
                 productQuantity = $('#product-tree').data('quantity'),
                 slug            = current.data('slug'),
                 data            = {_token: SETTING.CSRF_TOKEN, product_quantity: productQuantity, slug: slug};
-                
+
             $.ajax({
                 type: 'POST',
                 url: SETTING.REFRESH_URL,
                 data: data,
                 success: function(response) {
-                    
+
                 }
             });
         },
@@ -1992,7 +2076,7 @@ $(document).ready(function(){
         $('#save-product-form').find('#product-id').val('');
         $('.product-image-hidden').val('');
         $('.add-product-image').attr('style', '');
-        $('.add-product-image').html('<span class="_fwfl _fh"><i class="fa fa-plus"></i></span>');
+        $('.add-product-image').html(SETTING.PRODUCT_IMG_ADD);
         var modalTitle = $('#addProductModalLabel');
         modalTitle.text(modalTitle.data('add-title'));
     }
