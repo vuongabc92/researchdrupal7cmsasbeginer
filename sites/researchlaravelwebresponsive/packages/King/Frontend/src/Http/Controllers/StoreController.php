@@ -245,6 +245,13 @@ class StoreController extends FrontController
         }
     }
 
+    /**
+     * Delete a product image
+     * 
+     * @param \Illuminate\Http\Request $request
+     * 
+     * @return JSON
+     */
     public function ajaxDeleteOneProductImg(Request $request) {
         //Only accept ajax request
         if ($request->ajax() && $request->isMethod('POST')) {
@@ -256,18 +263,30 @@ class StoreController extends FrontController
             $store     = store();
             $productId = (int) $request->get('product_id');
             $image     = $request->get('img_name');
+            $number    = $request->get('number');
             $product   = $store->products->find($productId);
             
             if ($product === null) {
                 return pong(0, _t('not_found'), 404);
             }
-
-
-
+                     
             try {
+                $product->toImage();
+                $imageProper = 'image_' . $number;
+                $images      = $product->$imageProper;
+                $allImages   = $product->images;
 
-
-
+                if ($images !== null && $images->thumb === $image) {
+                    $productPath = config('front.product_path') . $store->id . '/';
+                    foreach($images as $one) {
+                        delete_file($productPath . $one);
+                    }
+                    unset($allImages[$number - 1]);
+                }
+                
+                $product->images = $allImages->toJson();
+                $product->save();
+                
             } catch (Exception $ex) {
                 return pong(0, _t('opp'), 500);
             }

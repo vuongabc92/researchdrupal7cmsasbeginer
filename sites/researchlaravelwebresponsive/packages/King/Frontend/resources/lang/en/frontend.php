@@ -155,5 +155,11 @@ return [
     'product_price' => 'Price',
     'product_old_price' => 'Old price',
     'product_desc' => 'Description',
-    'unauth' => 'Unauthorized'
+    'unauth' => 'Unauthorized',
+    'buy_it' => 'Buy it',
+    'details' => 'Details...',
+    'more_comments' => 'Load more comments',
+    'view_all_comments' => 'View all __COUNT comments',
+    'login2Comment' => 'Login to comment...',
+    'leave_comment' => 'Leave a comment...'
 ];

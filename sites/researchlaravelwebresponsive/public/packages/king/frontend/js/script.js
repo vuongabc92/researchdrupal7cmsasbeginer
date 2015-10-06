@@ -1890,9 +1890,7 @@
                         type: 'POST',
                         url: url,
                         data: {_token: SETTING.CSRF_TOKEN, number: number, img_name: imgName, product_id: productId},
-                        success: function(response) {
-
-                        }
+                        success: function() {}
                     });
 
                     that.removeHtml(number);

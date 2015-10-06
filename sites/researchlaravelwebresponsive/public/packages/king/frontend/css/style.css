@@ -169,7 +169,7 @@ body{background-color:#f5f8fa;}
 .-qvp-comment-form{position:relative;height:61px;border-top:solid 1px #eee;}
 .-qvp-comment-text{padding:20px 0;border:none;outline:none;color:#6a6a6a;background-color:#fff;}
 .-qvp-comment-loading{position:absolute;display:none;width:16px;height:16px;left:50%;top:50%;margin-top:-8px;margin-left:-8px;}
-.-qvp-comments-tree .close{font-weight:normal;font-size:26px;margin:-6px 0 0 15px;height:21px;}
+.-qvp-comments-tree .close{font-weight:normal;font-size:26px;margin:-3px 0 0 15px;height:21px;}
 .-qvp-more-comment-loading{display:none;}
 .product-carousel-container{max-width:570px;position:relative}
 .product-carousel-container img{cursor:move;width:100%;height:100%;}
