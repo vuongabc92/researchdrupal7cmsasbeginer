@@ -27,7 +27,7 @@ Setting > Store
                         <b class="_fr _tr7 _fs13 _dn upload-cover-messages"></b>
                     </div>
                     <div class="_fwfl _mt10 setting-cover-box cover-medium" style="background-image:url('{{ get_cover('medium') }}')">
-                        <button class="_fr _m10 btn _btn-sm _btn-black-opacity _r50 choose-cover-btn" data-event-trigger="#cover-file" data-event="click|click">
+                        <button class="_fr _m10 _btn-black-opacity _r50 choose-cover-btn" data-event-trigger="#cover-file" data-event="click|click">
                             <b class="fa fa-pencil"></b>
                         </button>
                         <img class="change-cover-loading" id="change-cover-loading" src="{{ asset('packages/king/frontend/images/loading-gray-white-24x24.gif') }}" />
