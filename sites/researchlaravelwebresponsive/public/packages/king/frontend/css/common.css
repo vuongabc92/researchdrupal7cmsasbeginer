@@ -396,5 +396,5 @@ button._btn-sm{height: 30px;line-height:17px;}
 .modal .modal-header > .close {font-weight:normal;font-size:25px;}
 
 
-.modal{position:fixed;}
+body.modal-open{position: fixed;}
 .modal-body{-webkit-overflow-scrolling:touch;}
