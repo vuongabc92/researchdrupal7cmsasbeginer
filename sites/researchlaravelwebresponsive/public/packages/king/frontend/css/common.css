@@ -394,3 +394,7 @@ button._btn-sm{height: 30px;line-height:17px;}
 -moz-border-radius:2px;-ms-border-radius:2px;-o-border-radius:2px;}
 /* Modal */
 .modal .modal-header > .close {font-weight:normal;font-size:25px;}
+
+
+.modal{position:fixed;}
+.modal-body{-webkit-overflow-scrolling:touch;}
