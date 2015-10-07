@@ -152,8 +152,8 @@ body{background-color:#f5f8fa;}
 
 /* Quick view product modal */
 .-qvp-modal-left{width:100%;float:left;background-color:#fff;}
-.-qvp-modal-right{width:100%;height:100%;float:left;background-color:#fff;position:relative;}
-.-qvp-modal .modal-dialog{margin:auto;position:absolute;top:0;right:0;left:0;bottom:0;}
+.-qvp-modal-right{width:100%;float:left;background-color:#fff;}
+.-qvp-modal .modal-dialog{margin:auto;}
 .-qvp-modal .modal-content{height:100%;margin-bottom:0;border:0;box-shadow:none;-webkit-box-shadow:none;-moz-box-shadow:none;}
 .-qvp-handle-container{padding:0 20px;}
 .-qvp-handle-lg{display:block;}
@@ -168,7 +168,7 @@ body{background-color:#f5f8fa;}
 .-qvp-comments-tree{height:auto;padding:0 20px 20px 20px;color:#777;font-size:14px;}
 .-qvp-comments-tree>li{width:100%;float:left;font-size:14px;color:#777;margin-bottom:7px;}
 .-qvp-comments-tree>li>a.comment-owner{text-transform:capitalize;color:#125688;font-weight:bold;text-decoration:none; margin-right:0.3em;}
-.-qvp-comment-frm-container{padding:0 20px;bottom:0;position:absolute;}
+.-qvp-comment-frm-container{padding:0 20px;}
 .-qvp-comment-form{position:relative;height:61px;border-top:solid 1px #eee;}
 .-qvp-comment-text{padding:20px 0;border:none;outline:none;color:#6a6a6a;background-color:#fff;}
 .-qvp-comment-loading{position:absolute;display:none;width:16px;height:16px;left:50%;top:50%;margin-top:-8px;margin-left:-8px;}
@@ -213,9 +213,9 @@ body{background-color:#f5f8fa;}
 @media screen and (min-width: 571px) {
     .-qvp-modal .modal-dialog{margin:30px auto;}
     .-qvp-modal .modal-content{margin-bottom:30px;border:1px solid #999;border:1px solid rgba(0, 0, 0, .2);-webkit-box-shadow: 0 3px 9px rgba(0, 0, 0, .5);box-shadow:0 3px 9px rgba(0, 0, 0, .5);}
-    .-qvp-modal .modal-lg{width:100%;max-width:570px;position:relative;top:auto;left:auto;right:auto;bottom:auto;}
+    .-qvp-modal .modal-lg{width:100%;max-width:570px;}
     .-ap-modal .modal-content{margin-bottom:30px;border:1px solid #999;border:1px solid rgba(0, 0, 0, .2);-webkit-box-shadow: 0 3px 9px rgba(0, 0, 0, .5);box-shadow:0 3px 9px rgba(0, 0, 0, .5);}
-    .-qvp-comment-frm-container{padding:0 20px;position:relative;}
+    .-qvp-comment-frm-container{padding:0 20px;}
     .add-product-image{height:133.90px;}
     .biggest-container{padding:0 15px;}
     .product-tree{padding:0;}
