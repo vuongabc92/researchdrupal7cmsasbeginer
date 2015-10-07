@@ -152,7 +152,7 @@ body{background-color:#f5f8fa;}
 
 /* Quick view product modal */
 .-qvp-modal-left{width:100%;float:left;background-color:#fff;}
-.-qvp-modal-right{width:100%;float:left;background-color:#fff;position:relative;}
+.-qvp-modal-right{width:100%;height:100%;float:left;background-color:#fff;position:relative;}
 .-qvp-modal .modal-dialog{margin:auto;position:absolute;top:0;right:0;left:0;bottom:0;}
 .-qvp-modal .modal-content{height:100%;margin-bottom:0;border:0;box-shadow:none;-webkit-box-shadow:none;-moz-box-shadow:none;}
 .-qvp-handle-container{padding:0 20px;}
