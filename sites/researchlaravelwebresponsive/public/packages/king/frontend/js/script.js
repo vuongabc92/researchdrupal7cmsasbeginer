@@ -1177,7 +1177,6 @@
                 countImgs       = 0,
                 carouselSetting = {
                     singleItem: true,
-                    lazyLoad: true,
                     pagination: false
                 };
 
