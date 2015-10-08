@@ -2131,7 +2131,7 @@ $(document).ready(function(){
         var w             = $(window),
             modalMaxWidth = SETTING.MODAL_MAXWIDTH;
 
-        if (w.width() < modalMaxWidth) {
+        //if (w.width() <= modalMaxWidth) {
             var padding       = 30,
                 modalWidth    = (w.width() < modalMaxWidth) ? w.width() : modalMaxWidth ,
                 modalWidth    = modalWidth - padding,
@@ -2144,6 +2144,6 @@ $(document).ready(function(){
             }
 
             image.height(imageWidth);
-        }
+        //}
     }
 });
