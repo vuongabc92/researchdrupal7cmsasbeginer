@@ -186,7 +186,7 @@ body.modal-open{position:fixed;}
 /* Share product */
 .-sp-modal{background-color:transparent;}
 .-sp-modal .modal-dialog{height:auto;}
-.share-text-input{height:34px;padding:7px 15px;background-color:#eee;border:solid 2px #eee;color:#555;}
+.share-text-input{height:34px;padding:5px 15px;background-color:#eee;border:solid 2px #eee;color:#555;}
 .share-text-input:focus{border-color:#007aff;}
 
 @media screen and (min-width: 320px){
