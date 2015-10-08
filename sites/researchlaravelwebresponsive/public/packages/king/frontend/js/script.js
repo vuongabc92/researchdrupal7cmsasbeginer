@@ -1899,7 +1899,7 @@
         },
         removeHtml: function(number){
             $('.product-image-' + number).val('');
-            $('.product-img-' + number).attr('style', '');
+            $('.product-img-' + number).css('border', '3px dashed #d5d5d5');
             $('.product-img-' + number).html(SETTING.PRODUCT_IMG_ADD);
         },
         destroy: function() {

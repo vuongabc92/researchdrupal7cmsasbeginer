@@ -4,7 +4,7 @@
         <div class="_fwfl _bgw _r0 modal-content">
             {!! Form::open(['route' => 'front_save_product', 'method' => 'POST', 'class' => '_fwfl', 'id' => 'save-product-form', 'data-save-product' => 'product_image_1|id|name|price|old_price|description']) !!}
             {!! Form::hidden('id', '', ['id' => 'product-id']) !!}
-            <div class=" _fwfl modal-header">
+            <div class="_fwfl modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                 <h4 class="modal-title _tg5 _fs17" id="addProductModalLabel" data-add-title="{{ _t('add_new_product') }}" data-edit-title="{{ _t('edit_product') }}">{{ _t('add_new_product') }}</h4>
             </div>

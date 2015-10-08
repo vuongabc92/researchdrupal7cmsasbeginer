@@ -91,7 +91,7 @@
                                         </button>
                                     </li>
                                     <li>
-                                        <button class="product-share">
+                                        <button class="product-share" data-toggle="modal" data-target=".share-product-modal">
                                             <i class="fa fa-share-alt"></i>
                                             <b>42</b>
                                         </button>
@@ -154,6 +154,7 @@
     @include('frontend::inc.save-product-popup', ['slug' => $store->slug])
     @endif
 @include('frontend::inc.quick-view-product-popup', ['slug' => $store->slug])
+@include('frontend::inc.product-share-modal', ['slug' => $store->slug])
 @stop
 
 @section('js')
