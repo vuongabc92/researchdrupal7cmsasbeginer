@@ -158,12 +158,14 @@ body.modal-open{position:fixed;}
 .-qvp-modal-right{width:100%;float:left;background-color:#fff;}
 .-qvp-modal .modal-dialog{margin:auto;background-color:#fff;}
 .-qvp-modal .modal-content{height:100%;margin-bottom:0;border:0;box-shadow:none;-webkit-box-shadow:none;-moz-box-shadow:none;}
-.-qvp-handle-container{padding:0 20px;}
+.-qvp-handle-container{height:60px;padding:0 20px;}
 .-qvp-handle-lg{display:block;}
 .-qvp-handle-sm{display:none;}
-.-qvp-handle{border-bottom:solid 1px transparent;padding:20px 0;margin:0;}
-.-qvp-handle .close{height:22px;line-height:10px;font-size:31px;margin-top:-5px;font-weight:normal;opacity:0.3;}
-.-qvp-handle .close:hover{opacity:0.5;}
+.-qvp-handle{height:20px;margin:20px 0;}
+.-qvp-handle>li{height:20px;line-height:20px;vertical-align:middle;}
+.-qvp-handle>li:last-child{float:right;}
+.-qvp-handle>li>.close{height:20px;line-height:20px;vertical-align:middle;font-size:31px;margin:-3px 0 0;font-weight:normal;opacity:0.3;}
+.-qvp-handle>li>.close:hover{opacity:0.5;}
 .-qvp-details{color:#55A1F5;}
 .-qvp-details:hover{color:#007aff;text-decoration:none;}
 .-qvp-view-more-comments{background-color:transparent;border:none;outline:none;color:#999;}
