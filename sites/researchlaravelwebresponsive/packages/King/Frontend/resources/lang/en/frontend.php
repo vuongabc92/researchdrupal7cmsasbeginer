@@ -146,7 +146,7 @@ return [
     //Store
     'store_title' => 'Setting > My store',
     'product_edit' => 'Edit',
-    'product_hide' => 'Edit',
+    'product_hide' => 'Hide',
     'product_remove' => 'Remove',
     'add_new_product' => 'Add new product',
     'edit_product' => 'Edit product',

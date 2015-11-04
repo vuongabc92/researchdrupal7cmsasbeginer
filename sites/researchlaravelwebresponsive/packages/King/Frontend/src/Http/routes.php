@@ -57,5 +57,7 @@ Route::post('comments/{product_id}/load-more', ['as' => 'front_comments_load_mor
 Route::get('/search', ['as' => 'front_search_empty', 'uses' => 'HomeController@ajaxSearch']);
 Route::get('/search/{keyword}', ['as' => 'front_search', 'uses' => 'HomeController@ajaxSearch']);
 
+Route::get('/{slug}/contact', ['as' => 'front_store_contact', 'uses' => 'StoreController@contact']);
+
 Route::get('/{slug}', ['as' => 'front_astore', 'uses' => 'StoreController@store']);
 Route::post('/refresh', ['as' => 'front_refresh', 'uses' => 'StoreController@refresh']);

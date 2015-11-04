@@ -38,18 +38,6 @@ class StoreController extends FrontController
         $this->_productImgSizes = config('front.product_img_size');
     }
 
-    /**
-     * Display store page
-     *
-     * @return response
-     */
-    public function index() {
-        return view('frontend::store.index', [
-            'productCount' => store()->products->count(),
-            'products'     => store()->products
-        ]);
-    }
-
     public function store($slug) {
 
         $store = Store::where('slug', $slug)->first();
@@ -61,6 +49,23 @@ class StoreController extends FrontController
         return view('frontend::store.index', [
             'productCount' => $store->products->count(),
             'products'     => $store->products->sortBy('created_date'),
+            'store'        => $store,
+            'storeCover'   => config('front.cover_path') . $store->cover_big,
+            'productPath'  => config('front.product_path') . $store->id . '/',
+            'storeOwner'   => auth()->guest() ? false : ($store->user_id === user()->id)
+        ]);
+    }
+    
+    public function contact($slug) {
+        
+        $store = Store::where('slug', $slug)->first();
+
+        if ($store === null) {
+            throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException('Store Not Found.');
+        }
+
+        return view('frontend::store.contact', [
+            'productCount' => $store->products->count(),
             'store'        => $store,
             'storeCover'   => config('front.cover_path') . $store->cover_big,
             'productPath'  => config('front.product_path') . $store->id . '/',
@@ -603,7 +608,7 @@ class StoreController extends FrontController
             ]]);
         }
     }
-
+    
     public function refresh(Request $request) {
 
         if ($request->ajax() && $request->isMethod('POST')) {

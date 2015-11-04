@@ -3,7 +3,7 @@
         <div class="_fwfl _bgw _r0 modal-content">
             <div class="-qvp-modal-left">
                 <div class="_fwfl -qvp-handle-container -qvp-handle-lg">
-                    <ul class="_ls _fwfl _fh product-handle -qvp-handle">
+                    <ul class="_ls _fl _fh product-handle -qvp-handle">
                         <li>
                             <button class="product-pin" {{ (auth()->check()) ? 'data-pin-trigger' : '' }}>
                                 <i class="fa fa-thumb-tack"></i>
@@ -22,8 +22,8 @@
                                 <b class="quick-view-product-comments">0</b>
                             </button>
                         </li>
-                        <li><button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button></li>
                     </ul>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                 </div>
                 <div class="_fwfl product-carousel-container -qvp-carousel">
                     <div id="product-carousel" class="owl-carousel"></div>
@@ -33,7 +33,7 @@
             </div>
             <div class="-qvp-modal-right">
                 <div class="_fwfl -qvp-handle-container -qvp-handle-sm">
-                    <ul class="_fwfl product-handle -qvp-handle">
+                    <ul class="_fl product-handle -qvp-handle">
                         <li>
                             <button class="product-pin" {{ (auth()->check()) ? 'data-pin-trigger' : '' }}>
                                 <i class="fa fa-thumb-tack"></i>
@@ -52,8 +52,8 @@
                                 <b class="quick-view-product-comments">0</b>
                             </button>
                         </li>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                     </ul>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                 </div>
                 <div class="_fwfl _p20">
                     <button class="_fl btn _btn _btn-blue1 _btn-sm">{{ _t('buy_it') }}</button>

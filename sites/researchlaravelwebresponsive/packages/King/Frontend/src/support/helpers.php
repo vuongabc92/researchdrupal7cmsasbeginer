@@ -676,3 +676,21 @@ if ( ! function_exists('nl2p')) {
         return preg_replace('#\R+#', '</p><p>', $string);
     }
 }
+
+if ( ! function_exists('store_address')) {
+    
+    function store_address($store) {
+        
+        $address = '';
+        if ($store instanceof App\Models\Store) {
+            $address .= $store->street . ', ';
+            $address .= $store->ward->type . ' ' . $store->ward->name . ', ';
+            $address .= $store->district->type . ' ' . $store->district->name . ', ';
+            $address .= $store->city->type . ' ' . $store->city->name;
+        }
+        
+        return $address;
+        
+    }
+    
+}

@@ -48,7 +48,7 @@ class Store extends Base
      * @return App\Models\Ward
      */
     public function ward() {
-        return $this->hasOne('App\Models\Ward');
+        return $this->belongsTo('App\Models\Ward');
     }
 
     /**
