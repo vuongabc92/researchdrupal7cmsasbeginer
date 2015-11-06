@@ -13,12 +13,12 @@
             <div class="_fwfl contact-map"></div>
             <div class="_fwfl _mt10 contact-info">
                 <div class="_fwfl contact-field">
-                    <i class="_fl _r50 _tg5 contact-field-icon glyphicon glyphicon-map-marker"></i> 
-                    <span class="_fl _ml15 _tg5 contact-field-text">{{ store_address($store) }}</span>
+                    <i class="_r50 _tg5 contact-field-icon glyphicon glyphicon-map-marker"></i>
+                    <span class="_ml10 _tg5 contact-field-text">{{ store_address($store) }}</span>
                 </div>
                 <div class="_fwfl contact-field">
-                    <i class="_fl _r50 _tg5 contact-field-icon fa fa-phone"></i> 
-                    <span class="_fl _ml15 _tg5 contact-field-text">0998976755</span>
+                    <i class="_r50 _tg5 contact-field-icon fa fa-phone"></i>
+                    <span class="_ml10 _tg5 contact-field-text">0998976755</span>
                 </div>
                 <div class="_fwfl _mt10 _p15 contact-other-info">
                     <h4 class="_fwfl _tg5 _fs17">Other info</h4>
