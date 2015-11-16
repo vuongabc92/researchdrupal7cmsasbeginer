@@ -108,7 +108,14 @@
     $('.product-hide').tooltip();
     $('.product-remove').tooltip();
     $(document).ready(function() {
-
+        $('.product-comment').on('click', function(e){
+            $('#qvp-comment-input').focus();
+        });
+        $('#qvp-comment-input').on('focus', function(e){
+            $('.product-comment-tree').animate({
+                scrollTop: $('.product-comment-tree li:last-child').offset().top
+            });
+        });
     });
 
 </script>

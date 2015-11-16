@@ -1017,8 +1017,12 @@
                 $.ajax({
                     type: 'GET',
                     url: current.attr('href'),
-                    beforeSend: function(){},
-                    error: function() {},
+                    beforeSend: function(){
+                        $('#common-popup-loading').show();
+                    },
+                    error: function() {
+                        $('#common-popup-loading').hide();
+                    },
                     success: function(response) {
                         var data           = response.data,
                             productImg     = SETTING.PRODUCT_IMG,
@@ -1038,6 +1042,7 @@
                         }
 
                         modal.modal('show');
+                        $('#common-popup-loading').hide();
                     }
                 });
             });
@@ -1107,8 +1112,12 @@
                 $.ajax({
                     type: 'GET',
                     url: current.attr('href'),
-                    beforeSend: function(){},
-                    error: function() {},
+                    beforeSend: function(){
+                        $('#common-popup-loading').show();
+                    },
+                    error: function() {
+                        $('#common-popup-loading').hide();
+                    },
                     success: function(response) {
                         var data  = response.data;
                         that.isPinned(data.pin.viewer_has_pinned);
@@ -1116,6 +1125,7 @@
                         that.initCarousel(data.images);
                         that.showComments(response.data.comments);
                         that.modal.modal('show');
+                        $('#common-popup-loading').hide();
                     }
                 });
 
@@ -1551,7 +1561,7 @@
             quickComment.html(data.product.count_comment);
             commentNum.html(data.product.count_comment);
             listComment.animate({
-                scrollTop: $(".product-comment-tree li:last-child").offset().top
+                scrollTop: $('.product-comment-tree li:last-child').offset().top
             });
             commentBtn.addClass('commented');
             qvpCommentBtn.addClass('commented');
@@ -2131,19 +2141,17 @@ $(document).ready(function(){
         var w             = $(window),
             modalMaxWidth = SETTING.MODAL_MAXWIDTH;
 
-        //if (w.width() <= modalMaxWidth) {
-            var padding       = 30,
-                modalWidth    = (w.width() < modalMaxWidth) ? w.width() : modalMaxWidth ,
-                modalWidth    = modalWidth - padding,
-                image         = $('.add-product-image'),
-                imageWidth    = (image.width()*modalWidth)/100,
-                modal         = $('#add-product-modal');
+        var padding = 30,
+            modalWidth = (w.width() < modalMaxWidth) ? w.width() : modalMaxWidth,
+            modalWidth = modalWidth - padding,
+            image = $('.add-product-image'),
+            imageWidth = (image.width() * modalWidth) / 100,
+            modal = $('#add-product-modal');
 
-            if (resize && (modal.data('bs.modal') || {}).isShown) {
-                imageWidth = image.width();
-            }
+        if (resize && (modal.data('bs.modal') || {}).isShown) {
+            imageWidth = image.width();
+        }
 
-            image.height(imageWidth);
-        //}
+        image.height(imageWidth);
     }
 });

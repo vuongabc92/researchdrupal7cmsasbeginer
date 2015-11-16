@@ -2,7 +2,7 @@
     <div class="modal-dialog modal-lg">
         <div class="_fwfl _bgw _r0 modal-content">
             <div class="-qvp-modal-left">
-                <div class="_fwfl -qvp-handle-container -qvp-handle-lg">
+                <div class="_fwfl -qvp-handle-container -qvp-handle-lg modal-header">
                     <ul class="_ls _fl _fh product-handle -qvp-handle">
                         <li>
                             <button class="product-pin" {{ (auth()->check()) ? 'data-pin-trigger' : '' }}>
@@ -32,7 +32,7 @@
                 </div>
             </div>
             <div class="-qvp-modal-right">
-                <div class="_fwfl -qvp-handle-container -qvp-handle-sm">
+                <div class="_fwfl -qvp-handle-container -qvp-handle-sm modal-header">
                     <ul class="_fl product-handle -qvp-handle">
                         <li>
                             <button class="product-pin" {{ (auth()->check()) ? 'data-pin-trigger' : '' }}>
@@ -55,7 +55,7 @@
                     </ul>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                 </div>
-                <div class="_fwfl _p20">
+                <div class="_fwfl -qvp-other-link">
                     <button class="_fl btn _btn _btn-blue1 _btn-sm">{{ _t('buy_it') }}</button>
                     <a href="#" class="_fr _fs13 _fwb _mt7 -qvp-details">{{ _t('details') }}</a>
                 </div>

@@ -130,7 +130,7 @@
         <div class="_fwfl _mt55 biggest-container">
             @yield('content')
         </div>
-
+        <img class="common-popup-loading" id="common-popup-loading" src="{{ asset('packages/king/frontend/images/loading-gray-white-24x24.gif') }}" />
         <script src="{{ asset('packages/king/frontend/js/jquery_v1.11.1.js') }}"></script>
         <script src="{{ asset('packages/king/frontend/js/jquery-ui-1.11.4.min.js') }}"></script>
         <script src="{{ asset('packages/king/frontend/js/bootstrap.js') }}"></script>
