@@ -23,7 +23,7 @@
                 <div class="_fwfl _mt10 _p15 contact-other-info">
                     <h4 class="_fwfl _tg5 _fs17">About the store</h4>
                     <div class="_fwfl _mt10">
-                        <select class="_fwfl" id="_tinymce"></select>
+                        <textarea class="_fwfl setting-form-field"></textarea>
                     </div>
                     <button class="_fr _mt10 btn _btn _btn-sm _btn-blue1 _r2">Save about info</button>
                     <button class="_fr _mt10 btn _btn _btn-sm _btn-white _r2 _mr10">Cancel</button>

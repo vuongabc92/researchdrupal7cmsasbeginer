@@ -20,9 +20,9 @@
                 </div>
                 @endif
                 <li>
-                    <button class="_fr _btn-black-opacity _r50 store-nav-contact">
+                    <a class="_fr _btn-black-opacity _r50 store-nav-contact" href="{{ route('front_store_contact', $store->slug) }}">
                         <b class="fa fa-map-marker _fs15"></b>
-                    </button>
+                    </a>
                 </li>
             </ul>
             <img class="change-cover-loading" id="change-cover-loading" src="{{ asset('packages/king/frontend/images/loading-black-opacity-24x24.gif') }}" />
