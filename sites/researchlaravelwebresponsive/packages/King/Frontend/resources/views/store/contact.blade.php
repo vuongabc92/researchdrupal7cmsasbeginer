@@ -13,18 +13,16 @@
             <div class="_fwfl contact-map" id="contact-map"></div>
             <div class="_fwfl _mt10 contact-info">
                 <div class="_fwfl contact-field">
-                    <i class="_fl _mr15 _r50 _tg5 contact-field-icon glyphicon glyphicon-map-marker"></i> 
+                    <i class="_fl _mr15 _r50 _tg5 contact-field-icon glyphicon glyphicon-map-marker"></i>
                     <span class="_fl _tg5 contact-field-text">{{ store_address($store) }}</span>
                 </div>
                 <div class="_fwfl contact-field">
-                    <i class="_mr15 _r50 _tg5 contact-field-icon fa fa-phone"></i> 
+                    <i class="_mr15 _r50 _tg5 contact-field-icon fa fa-phone"></i>
                     <span class="_tg5 contact-field-text">0998976755</span>
                 </div>
                 <div class="_fwfl _mt10 _p15 contact-other-info">
                     <h4 class="_fwfl _tg5 _fs17">About the store</h4>
-                    <div class="_fwfl _mt10">
-                        <textarea class="_fwfl setting-form-field"></textarea>
-                    </div>
+                    <textarea class="_fwfl _mt10 setting-form-field"></textarea>
                     <button class="_fr _mt10 btn _btn _btn-sm _btn-blue1 _r2">Save about info</button>
                     <button class="_fr _mt10 btn _btn _btn-sm _btn-white _r2 _mr10">Cancel</button>
                 </div>
@@ -37,9 +35,7 @@
 
 @section('js')
 <script src="https://maps.googleapis.com/maps/api/js?sensor=false"></script>
-<script src="{{ asset('tinymce/tinymce.min.js') }}"></script>
 <script>
-
     function initMap() {
         var longLat = {lat: -33.8666, lng: 151.1958},
         map = new google.maps.Map(document.getElementById('contact-map'), {
