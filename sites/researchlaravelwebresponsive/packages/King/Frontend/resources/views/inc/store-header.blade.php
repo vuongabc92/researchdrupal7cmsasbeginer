@@ -55,6 +55,8 @@
             </li>
             @endif
         </ul>
-        <button class="_fr btn _btn _btn-blue _btn-sm _m12"><i class="fa fa-thumbs-o-up"></i> {{ _t('store_follow') }}</button>
+        @if ($storeOwner)
+        <button class="_fr btn _btn _btn-blue _btn-sm _m12" data-follower data-url="{{ route('front_store_make_follower', $store->slug) }}"  @if($currentUserHasFollowed) disabled @endif ><i class="fa fa-thumbs-o-up"></i> {{ _t('store_follow') }}</button>
+        @endif
     </div>
 </div>

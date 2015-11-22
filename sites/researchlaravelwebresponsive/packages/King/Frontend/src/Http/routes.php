@@ -29,7 +29,7 @@ Route::group(['middleware' => 'auth'], function(){
         $route->get('store/get-ward/{id}', ['as' => 'front_setting_get_ward', 'uses' => 'SettingController@ajaxGetWardByCityId']);
         $route->post('store/change-info', ['as' => 'front_setting_store_change', 'uses' => 'SettingController@ajaxSaveStoreInfo']);
         $route->post('store/check-slug-unique', ['as' => 'front_setting_store_slug_unique', 'uses' => 'SettingController@ajaxCheckStoreSlugUnique']);
-
+        
         Route::group(['middleware' => 'storer'], function($route){
             //Setting store
             $route->post('store/change-cover', ['as' => 'front_setting_change_cover', 'uses' => 'SettingController@ajaxChangeCover']);
@@ -50,6 +50,9 @@ Route::group(['middleware' => 'auth'], function(){
             $route->delete('comments/{product_id}/{store_slug}/delete/{comment_id}', ['as' => 'front_comments_delete', 'uses' => 'StoreController@ajaxProductDeleteComment']);
         });
     });
+    
+    Route::post('{slug}/make-follower', ['as' => 'front_store_make_follower', 'uses' => 'StoreController@ajaxFollowAStore']);
+    
 });
 
 Route::get('p/{id}/{store_slug}', ['as' => 'front_product_quick_view', 'uses' => 'StoreController@ajaxGetQuickViewProduct']);
@@ -58,6 +61,5 @@ Route::get('/search', ['as' => 'front_search_empty', 'uses' => 'HomeController@a
 Route::get('/search/{keyword}', ['as' => 'front_search', 'uses' => 'HomeController@ajaxSearch']);
 
 Route::get('/{slug}/contact', ['as' => 'front_store_contact', 'uses' => 'StoreController@contact']);
-
 Route::get('/{slug}', ['as' => 'front_astore', 'uses' => 'StoreController@store']);
 Route::post('/refresh', ['as' => 'front_refresh', 'uses' => 'StoreController@refresh']);

@@ -38,20 +38,19 @@ if ( ! function_exists('store')) {
      * Current authenticated user's store if exist
      *
      * @param string|int $key Store id or store slug
-     * @param boolean    $slug Find by slug
      *
      * @return \App\Models\Store|null
      */
-    function store($key = 0, $slug = false) {
+    function store($key = 0) {
 
         if (user() !== null && user()->store !== null) {
             
             $store = null;
             
-            if ($slug) {
+            if (is_numeric($key)) {
                 $store =  App\Models\Store::where('slug', $key)->first();
             } elseif ($key) {
-                $store = App\Models\Store::find($key);
+                $store = App\Models\Store::find((int) $key);
             }
             
             if ($store !== null) {
@@ -241,11 +240,11 @@ if ( ! function_exists('pong')) {
     /**
      * Return a new simple JSON response from the application.
      *
-     * @param  string $status
-     * @param  string $messages
-     * @param  int    $status_code
-     * @param  array  $headers
-     * @param  int    $options
+     * @param  string       $status 0 = ERROR and 1 = OK
+     * @param  string|array $messages
+     * @param  int          $status_code
+     * @param  array        $headers
+     * @param  int          $options
      *
      * @return \Illuminate\Http\JsonResponse
      */

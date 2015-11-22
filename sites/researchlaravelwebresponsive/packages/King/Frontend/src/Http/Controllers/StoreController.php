@@ -18,6 +18,7 @@ use App\Models\Product;
 use App\Models\Pin;
 use App\Models\Comment;
 use App\Models\Store;
+use App\Models\Follower;
 
 class StoreController extends FrontController
 {
@@ -38,24 +39,48 @@ class StoreController extends FrontController
         $this->_productImgSizes = config('front.product_img_size');
     }
 
+    /**
+     * Display a store by slug
+     * 
+     * @param string $slug
+     * 
+     * @return Response
+     * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
+     */
     public function store($slug) {
 
         $store = Store::where('slug', $slug)->first();
-
+        
         if ($store === null) {
             throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException('Store Not Found.');
         }
-
+        
+        if (auth()->guest()) {
+            $currentUserHasFollowed = false;
+        } else {
+            $follower = Follower::where('store_id', $store->id)->where('user_id', user()->id)->first();
+            $currentUserHasFollowed = ($follower === null) ? false : true;
+        }
+        
         return view('frontend::store.index', [
             'productCount' => $store->products->count(),
             'products'     => $store->products->sortBy('created_date'),
             'store'        => $store,
             'storeCover'   => config('front.cover_path') . $store->cover_big,
             'productPath'  => config('front.product_path') . $store->id . '/',
-            'storeOwner'   => auth()->guest() ? false : ($store->user_id === user()->id)
+            'storeOwner'   => auth()->guest() ? false : ($store->user_id === user()->id),
+            'currentUserHasFollowed' => $currentUserHasFollowed,
         ]);
     }
     
+    /**
+     * Contact page
+     * 
+     * @param string $slug
+     * 
+     * @return Response
+     * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
+     */
     public function contact($slug) {
         
         $store = Store::where('slug', $slug)->first();
@@ -152,7 +177,7 @@ class StoreController extends FrontController
 
             return pong(1, [
                 'messages' => _t('saved_info'),
-                'data' => [
+                'data'     => [
                     'id'        => $product->id,
                     'name'      => $product->name,
                     'price'     => product_price($product->price),
@@ -221,9 +246,7 @@ class StoreController extends FrontController
                     'order'    => $order
                 ]
             ]);
-
         }
-
     }
 
     /**
@@ -625,10 +648,33 @@ class StoreController extends FrontController
             if ($store->products->count() > $productQuantity) {
                 dd($store->ptoducts);
             }
-
         }
     }
 
+    public function ajaxFollowAStore(Request $request, $slug) {
+        
+        if ($request->ajax() && $request->isMethod('POST')) {
+            
+            $userId   = user()->id;
+            $store    = store($slug);
+            $follower = Follower::where('user_id', $userId)->where('store_id', $store->id)->first();
+            
+            if ($follower !== null) {
+                $follower->is_follow = false;
+                $follower->save();
+            } else {
+                $follower              = new Follower();
+                $follower->user_id     = $userId;
+                $follower->store_id    = $store->id;
+                $follower->is_follow   = true;
+                $follower->create_time = time();
+                $follower->save();
+            }
+            
+            return pong(1, _t('saved_info'));
+        }
+    }
+    
     /**
      * Get load more product comments
      *
@@ -669,7 +715,7 @@ class StoreController extends FrontController
         }
 
         return [
-            'id' => $comment->id,
+            'id'   => $comment->id,
             'text' => $comment->text,
             'user' => [
                 'id'       => $comment->user_id,
@@ -799,11 +845,8 @@ class StoreController extends FrontController
      * @return array
      */
     protected function _getProductImageRules() {
-
-        $maxFileSize = _const('PRODUCT_MAX_FILE_SIZE');
-
         return [
-            '__product' => 'required|image|mimes:jpg,png,jpeg,gif|max:' . $maxFileSize
+            '__product' => 'required|image|mimes:jpg,png,jpeg,gif|max:' . _const('PRODUCT_MAX_FILE_SIZE')
         ];
     }
 
@@ -813,7 +856,6 @@ class StoreController extends FrontController
      * @return array
      */
     protected function _getProductImageMessages() {
-
         return [
             '__product.required' => _t('no_file'),
             '__product.image'    => _t('file_not_image'),
