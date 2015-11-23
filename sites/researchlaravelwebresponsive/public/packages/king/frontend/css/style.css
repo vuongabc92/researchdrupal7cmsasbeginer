@@ -105,6 +105,10 @@ body{background-color:#f5f8fa;}
 .-ap-modal .modal-dialog{max-width:600px;width:auto;margin:auto;}
 .-ap-modal .modal-content{margin-bottom:0;border:0;box-shadow:none;-webkit-box-shadow:none;-moz-box-shadow:none;}
 .-api-last{margin-right:0 !important;}
+.follow-btn:hover{border-color:#007aff;color:#007aff;}
+.following-btn:hover{background-color:#f66;border-color:#f66;}
+.following-btn:hover .following-txt{display:none;}
+.following-btn:hover .unfollowing-txt{display:inline;}
 
 /* Product tree */
 .store-body{margin:20px 0;}

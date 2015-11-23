@@ -131,6 +131,8 @@ return [
     'store_rating' => 'Rating',
     'store_follow' => 'Follow',
     'store_followers' => 'Followers',
+    'store_unfollowing' => 'Unfollowing',
+    'store_following' => 'Following',
     'product_image_req' => 'Image is required.',
     'product_name_req' => 'Name is required.',
     'product_name_min' => 'Name is too short.',
